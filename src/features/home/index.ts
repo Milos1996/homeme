@@ -1,2 +1,1 @@
-// Public API of the homepage sections.
-export {};
+export { HomeHero } from "./components/home-hero";

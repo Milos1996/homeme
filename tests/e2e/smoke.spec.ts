@@ -7,6 +7,9 @@ test.describe("homepage smoke", () => {
       if (msg.type() === "error") errors.push(msg.text());
     });
     page.on("pageerror", (err) => errors.push(err.message));
+    page.on("response", (res) => {
+      if (res.status() >= 400) errors.push(`${res.status()} ${res.url()}`);
+    });
 
     await page.goto("/");
 

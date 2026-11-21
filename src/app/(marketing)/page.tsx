@@ -1,7 +1,13 @@
-export default function Page() {
-  return (
-    <main className="mx-auto flex w-full max-w-content flex-1 items-center px-gutter py-section">
-      <h1 className="text-5xl">HomeMe</h1>
-    </main>
-  );
+import { notFound } from "next/navigation";
+
+import { getProject } from "@/data";
+import { HomeHero } from "@/features/home";
+
+const FEATURED_PROJECT = "linden-court";
+
+export default function HomePage() {
+  const project = getProject(FEATURED_PROJECT);
+  if (!project) notFound();
+
+  return <HomeHero project={project} />;
 }

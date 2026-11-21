@@ -38,7 +38,8 @@ export const viewport: Viewport = {
   themeColor: "#f7f4ee", // --warm-white
 };
 
-const isProduction = env.NODE_ENV === "production";
+// Vercel Analytics / Speed Insights scripts are served by Vercel only: skip in dev, CI and local builds.
+const analyticsEnabled = env.NODE_ENV === "production" && env.VERCEL_ENV !== undefined;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -46,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster />
-        {isProduction && (
+        {analyticsEnabled && (
           <>
             <Analytics />
             <SpeedInsights />
