@@ -25,3 +25,24 @@ test.describe("3D apartment viewer", () => {
     expect(errors, errors.join("\n")).toEqual([]);
   });
 });
+
+test.describe("2D/3D toggle", () => {
+  test("switches to the 2D plan, unmounts the canvas and keeps the room selection", async ({
+    page,
+  }) => {
+    await page.goto(APARTMENT);
+    const viewer = page.getByRole("region", { name: /plan and 3D model/ });
+    await expect(viewer.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    await viewer.getByRole("button", { name: /^Bedroom 2/ }).click();
+    await expect(viewer.locator('[data-room-label="bedroom-2"]')).toHaveClass(/bg-forest-700/);
+
+    await viewer.getByRole("radio", { name: "2D floor plan" }).click();
+    await expect(viewer.locator("canvas")).toHaveCount(0);
+    await expect(viewer.getByRole("img", { name: "Floor plan of apartment 0.01" })).toBeVisible();
+    await expect(viewer.locator('[data-room="bedroom-2"]')).toHaveClass(/fill-sage-100/);
+
+    await viewer.getByRole("radio", { name: "3D model" }).click();
+    await expect(viewer.locator("canvas")).toBeVisible({ timeout: 15_000 });
+  });
+});

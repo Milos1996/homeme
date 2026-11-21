@@ -17,6 +17,8 @@ interface FloorPlan2DProps {
   /** Accessible name, e.g. "Floor plan of apartment 0.01". */
   title: string;
   highlightedRoomId?: string | null;
+  /** Mouse selection of rooms. Keyboard users select via the viewer's room list. */
+  onRoomSelect?: (roomId: string) => void;
   className?: string;
 }
 
@@ -42,6 +44,7 @@ export function FloorPlan2D({
   plan,
   title,
   highlightedRoomId = null,
+  onRoomSelect,
   className,
 }: FloorPlan2DProps) {
   const titleId = useId();
@@ -94,7 +97,11 @@ export function FloorPlan2D({
               className={cn(
                 "transition-colors duration-200",
                 room.id === highlightedRoomId ? "fill-sage-100" : "fill-paper",
+                onRoomSelect && "cursor-pointer hover:fill-stone-100",
               )}
+              // Pointer shortcut only; the viewer's room list is the keyboard-accessible control.
+
+              onClick={onRoomSelect ? () => onRoomSelect(room.id) : undefined}
             />
           ))}
 
