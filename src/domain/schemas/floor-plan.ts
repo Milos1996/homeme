@@ -1,8 +1,18 @@
 import { z } from "zod";
 
-import { segmentLength } from "../geometry/segment";
-import type { FloorPlan, Opening, Point2, Room, Wall } from "../types";
 import { LengthSchema, PositiveLengthSchema } from "./provenance";
+import { FURNITURE_CATALOG, furnitureFootprint } from "../geometry/furniture";
+import { pointInPolygon } from "../geometry/polygon";
+import { segmentLength } from "../geometry/segment";
+import type {
+  FloorPlan,
+  FurnitureItem,
+  FurnitureType,
+  Opening,
+  Point2,
+  Room,
+  Wall,
+} from "../types";
 
 export const Point2Schema = z.object({
   x: z.number().finite(),
@@ -53,12 +63,27 @@ export const OpeningSchema = z.object({
   sillHeight: LengthSchema,
 }) satisfies z.ZodType<Opening>;
 
-/** Validates a floor plan, including references and that openings fit inside their walls. */
+export const FurnitureItemSchema = z.object({
+  id: z.string().min(1),
+  type: z.enum(Object.keys(FURNITURE_CATALOG) as [FurnitureType, ...FurnitureType[]]),
+  roomId: z.string().min(1),
+  position: Point2Schema,
+  rotation: z.number().finite(),
+}) satisfies z.ZodType<FurnitureItem>;
+
+/** Shrinks a footprint slightly so pieces touching a wall face still count as inside. */
+const TOLERANCE = 0.02;
+
+/**
+ * Validates a floor plan: references, openings that fit inside their walls,
+ * and furniture that sits inside its room.
+ */
 export const FloorPlanSchema = z
   .object({
     rooms: z.array(RoomSchema),
     walls: z.array(WallSchema),
     openings: z.array(OpeningSchema),
+    furniture: z.array(FurnitureItemSchema).exactOptional(),
   })
   .superRefine((plan, ctx) => {
     const walls = new Map(plan.walls.map((w) => [w.id, w]));
@@ -88,6 +113,30 @@ export const FloorPlanSchema = z
           code: "custom",
           message: `Opening "${opening.id}" is taller than wall "${wall.id}"`,
           path: ["openings", index, "height"],
+        });
+      }
+    });
+
+    const rooms = new Map(plan.rooms.map((r) => [r.id, r]));
+    plan.furniture?.forEach((item, index) => {
+      const room = rooms.get(item.roomId);
+      if (!room) {
+        ctx.addIssue({
+          code: "custom",
+          message: `Furniture "${item.id}" references unknown room "${item.roomId}"`,
+          path: ["furniture", index, "roomId"],
+        });
+        return;
+      }
+      const corners = furnitureFootprint(item).map((c) => ({
+        x: c.x + Math.sign(item.position.x - c.x) * TOLERANCE,
+        y: c.y + Math.sign(item.position.y - c.y) * TOLERANCE,
+      }));
+      if (!corners.every((c) => pointInPolygon(c, room.polygon))) {
+        ctx.addIssue({
+          code: "custom",
+          message: `Furniture "${item.id}" does not fit inside room "${room.id}"`,
+          path: ["furniture", index, "position"],
         });
       }
     });

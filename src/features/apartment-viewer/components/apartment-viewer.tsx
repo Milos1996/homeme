@@ -30,7 +30,9 @@ export function ApartmentViewer({ plan, apartmentNumber, className }: ApartmentV
   const viewMode = useViewerStore((s) => s.viewMode);
   const cameraMode = useViewerStore((s) => s.cameraMode);
   const selectedRoomId = useViewerStore((s) => s.selectedRoomId);
-  const { setViewMode, setCameraMode, toggleRoom, reset } = useViewerStore.getState();
+  const showFurniture = useViewerStore((s) => s.showFurniture);
+  const { setViewMode, setCameraMode, toggleRoom, setShowFurniture, reset } =
+    useViewerStore.getState();
 
   // Fresh state for each apartment.
   useEffect(() => reset(), [plan, reset]);
@@ -78,6 +80,8 @@ export function ApartmentViewer({ plan, apartmentNumber, className }: ApartmentV
             label={`3D model of apartment ${apartmentNumber}`}
             cameraMode={cameraMode}
             onCameraModeChange={setCameraMode}
+            showFurniture={showFurniture}
+            onShowFurnitureChange={setShowFurniture}
             highlightedRoomId={selectedRoomId}
             onRoomSelect={toggleRoom}
           />

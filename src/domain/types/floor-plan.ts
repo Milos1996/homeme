@@ -1,3 +1,4 @@
+import type { FurnitureItem } from "./furniture";
 import type { Length } from "./provenance";
 
 /**
@@ -62,4 +63,6 @@ export interface FloorPlan {
   readonly rooms: readonly Room[];
   readonly walls: readonly Wall[];
   readonly openings: readonly Opening[];
+  /** Optional illustrative furniture. */
+  readonly furniture?: readonly FurnitureItem[];
 }

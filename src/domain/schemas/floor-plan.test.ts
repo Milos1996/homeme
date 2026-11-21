@@ -85,3 +85,43 @@ describe("dimension provenance", () => {
     );
   });
 });
+
+describe("furniture validation", () => {
+  const sofa = {
+    id: "f-sofa",
+    type: "sofa" as const,
+    roomId: "r-living",
+    position: { x: 3, y: 2 },
+    rotation: 0,
+  };
+
+  it("accepts furniture inside its room, including pieces against a wall", () => {
+    expect(FloorPlanSchema.safeParse({ ...studioPlan, furniture: [sofa] }).success).toBe(true);
+    const againstWall = { ...sofa, position: { x: 3, y: 0.45 } };
+    expect(FloorPlanSchema.safeParse({ ...studioPlan, furniture: [againstWall] }).success).toBe(
+      true,
+    );
+  });
+
+  it("rejects furniture in unknown rooms or sticking out of its room", () => {
+    const unknown = FloorPlanSchema.safeParse({
+      ...studioPlan,
+      furniture: [{ ...sofa, roomId: "r-nope" }],
+    });
+    expect(messages(unknown)).toContain('Furniture "f-sofa" references unknown room "r-nope"');
+
+    const outside = FloorPlanSchema.safeParse({
+      ...studioPlan,
+      furniture: [{ ...sofa, position: { x: 5.5, y: 2 } }],
+    });
+    expect(messages(outside)).toContain('Furniture "f-sofa" does not fit inside room "r-living"');
+  });
+
+  it("rejects unknown furniture types", () => {
+    const bad = FloorPlanSchema.safeParse({
+      ...studioPlan,
+      furniture: [{ ...sofa, type: "piano" }],
+    });
+    expect(bad.success).toBe(false);
+  });
+});

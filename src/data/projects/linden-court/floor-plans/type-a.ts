@@ -82,6 +82,68 @@ export const typeA: FloorPlan = {
     window("win-bedroom-2", "w-east", 0.9, 1.4, 1.5, 0.9),
     window("win-bedroom-1-east", "w-east", 4.6, 1.4, 1.5, 0.9),
   ],
+  // Illustrative furniture, placed clear of door swings.
+  furniture: [
+    {
+      id: "f-bathtub",
+      type: "bathtub",
+      roomId: "bathroom",
+      position: { x: 0.52, y: 1.0 },
+      rotation: 0,
+    },
+    { id: "f-wc", type: "wc", roomId: "bathroom", position: { x: 1.5, y: 0.45 }, rotation: 0 },
+    {
+      id: "f-basin",
+      type: "washbasin",
+      roomId: "bathroom",
+      position: { x: 0.37, y: 2.75 },
+      rotation: 90,
+    },
+    {
+      id: "f-bed-2",
+      type: "bed-single",
+      roomId: "bedroom-2",
+      position: { x: 8.35, y: 1.15 },
+      rotation: 0,
+    },
+    { id: "f-desk", type: "desk", roomId: "bedroom-2", position: { x: 5.5, y: 0.45 }, rotation: 0 },
+    {
+      id: "f-counter",
+      type: "kitchen-counter",
+      roomId: "kitchen",
+      position: { x: 0.43, y: 5.3 },
+      rotation: 90,
+    },
+    {
+      id: "f-dining",
+      type: "dining-table",
+      roomId: "kitchen",
+      position: { x: 1.75, y: 5.6 },
+      rotation: 0,
+    },
+    { id: "f-sofa", type: "sofa", roomId: "living", position: { x: 5.27, y: 5.65 }, rotation: 90 },
+    {
+      id: "f-coffee",
+      type: "coffee-table",
+      roomId: "living",
+      position: { x: 4.2, y: 5.65 },
+      rotation: 90,
+    },
+    {
+      id: "f-bed-1",
+      type: "bed-double",
+      roomId: "bedroom-1",
+      position: { x: 7.95, y: 5.6 },
+      rotation: 90,
+    },
+    {
+      id: "f-wardrobe",
+      type: "wardrobe",
+      roomId: "bedroom-1",
+      position: { x: 7.7, y: 3.8 },
+      rotation: 0,
+    },
+  ],
 };
 
 function door(id: string, wallId: string, offset: number, width: number) {

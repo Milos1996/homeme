@@ -9,6 +9,7 @@ import type { FloorPlan } from "@/domain/types";
 import { CameraRig } from "../camera/camera-rig";
 import { cameraLimits, cameraPoses, type CameraMode } from "../camera/presets";
 import { ApartmentModel } from "../meshes/apartment-model";
+import { FurnitureLayer } from "../meshes/furniture-layer";
 import { scenePalette } from "../palette";
 
 export interface ApartmentSceneProps {
@@ -16,6 +17,7 @@ export interface ApartmentSceneProps {
   cameraMode: CameraMode;
   highlightedRoomId?: string | null;
   showLabels?: boolean;
+  showFurniture?: boolean;
   onRoomSelect?: (roomId: string) => void;
   /**
    * DOM layer over the canvas that room labels render into. Passing a stable
@@ -30,6 +32,7 @@ export function ApartmentScene({
   cameraMode,
   highlightedRoomId = null,
   showLabels = true,
+  showFurniture = false,
   labelLayer,
   onRoomSelect,
 }: ApartmentSceneProps) {
@@ -91,6 +94,10 @@ export function ApartmentScene({
         highlightedRoomId={highlightedRoomId}
         {...(onRoomSelect ? { onRoomSelect } : {})}
       />
+
+      {showFurniture && plan.furniture && plan.furniture.length > 0 && (
+        <FurnitureLayer items={plan.furniture} />
+      )}
 
       {showLabels &&
         labels.map((label) => (
