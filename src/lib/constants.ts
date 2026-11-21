@@ -5,3 +5,6 @@ export const SITE_DESCRIPTION =
 
 /** Notice shown wherever fictional content appears. */
 export const DEMO_NOTICE = "Fictional demo development. Not a real listing.";
+
+/** The development featured on the homepage and in the main navigation. */
+export const FEATURED_PROJECT_SLUG = "linden-court";

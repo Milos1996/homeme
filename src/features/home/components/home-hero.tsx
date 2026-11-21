@@ -5,7 +5,6 @@ import { ProvenanceBadge } from "@/components/common/provenance-badge";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import type { Project } from "@/domain/types";
-import { DEMO_NOTICE, SITE_NAME } from "@/lib/constants";
 import { formatLength } from "@/lib/format";
 
 interface HomeHeroProps {
@@ -30,12 +29,7 @@ export function HomeHero({ project }: HomeHeroProps) {
   ];
 
   return (
-    <main className="flex flex-1 flex-col">
-      <Container className="flex items-center justify-between py-6">
-        <span className="font-display text-xl tracking-tight">{SITE_NAME}</span>
-        <span className="hidden text-sm text-muted-foreground sm:inline">{DEMO_NOTICE}</span>
-      </Container>
-
+    <div className="flex flex-1 flex-col">
       <Container className="grid flex-1 items-center gap-stack py-section lg:grid-cols-[1.2fr_1fr]">
         <div className="animate-in duration-700 fade-in slide-in-from-bottom-2">
           <p className="text-sm font-medium tracking-wide text-forest-700 uppercase">
@@ -85,6 +79,6 @@ export function HomeHero({ project }: HomeHeroProps) {
           </dl>
         </aside>
       </Container>
-    </main>
+    </div>
   );
 }
