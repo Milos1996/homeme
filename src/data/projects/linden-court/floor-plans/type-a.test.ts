@@ -45,3 +45,14 @@ describe("Linden Court Type A floor plan", () => {
     expect(total).toBeCloseTo(63, 1);
   });
 });
+
+describe("Type A furniture", () => {
+  it("places bed, sofa, table and kitchen units inside their rooms", () => {
+    const types = new Set(typeA.furniture?.map((f) => f.type));
+    for (const t of ["bed-double", "sofa", "dining-table", "kitchen-counter"] as const) {
+      expect(types).toContain(t);
+    }
+    // FloorPlanSchema checks every piece references a room and fits inside it.
+    expect(FloorPlanSchema.safeParse(typeA).success).toBe(true);
+  });
+});

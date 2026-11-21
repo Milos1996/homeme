@@ -14,12 +14,19 @@ vi.mock("@/three", () => ({
     label,
     highlightedRoomId,
     onRoomSelect,
+    showFurniture,
   }: {
     label: string;
     highlightedRoomId: string | null;
     onRoomSelect?: (id: string) => void;
+    showFurniture: boolean;
   }) => (
-    <div role="img" aria-label={label} data-highlighted={highlightedRoomId ?? ""}>
+    <div
+      role="img"
+      aria-label={label}
+      data-highlighted={highlightedRoomId ?? ""}
+      data-furniture={String(showFurniture)}
+    >
       <button type="button" onClick={() => onRoomSelect?.("kitchen")}>
         Click kitchen floor in 3D
       </button>
@@ -86,5 +93,24 @@ describe("ApartmentViewer", () => {
   it("shows room areas as estimates", () => {
     render(<ApartmentViewer plan={typeA} apartmentNumber="0.01" />);
     expect(chip(/^Bathroom/)).toHaveTextContent("Bathroom~8.2 m²");
+  });
+
+  it("shows furniture only after the furniture toggle is turned on", async () => {
+    const user = userEvent.setup();
+    render(<ApartmentViewer plan={typeA} apartmentNumber="0.01" />);
+
+    const toggle = screen.getByRole("button", { name: "Show furniture" });
+    expect(toggle).toHaveAttribute("aria-pressed", "false");
+    expect(scene3d()).toHaveAttribute("data-furniture", "false");
+
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-pressed", "true");
+    expect(scene3d()).toHaveAttribute("data-furniture", "true");
+  });
+
+  it("hides the furniture toggle for plans without furniture", () => {
+    const { furniture: _ignored, ...bare } = typeA;
+    render(<ApartmentViewer plan={bare} apartmentNumber="0.01" />);
+    expect(screen.queryByRole("button", { name: "Show furniture" })).not.toBeInTheDocument();
   });
 });

@@ -18,6 +18,11 @@ test.describe("3D apartment viewer", () => {
     await expect(viewer.locator("[data-room-label]")).toHaveCount(6);
     await expect(viewer.locator('[data-room-label="living"]')).toHaveText("Living room");
 
+    const furniture = viewer.getByRole("button", { name: "Show furniture" });
+    await expect(furniture).toHaveAttribute("aria-pressed", "false");
+    await furniture.click();
+    await expect(furniture).toHaveAttribute("aria-pressed", "true");
+
     const top = viewer.getByRole("radio", { name: "Top-down view" });
     await top.click();
     await expect(top).toHaveAttribute("aria-checked", "true");
