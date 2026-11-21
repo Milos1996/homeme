@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import type { Apartment, Building, Floor, Price, Project } from "../types";
-
 import { FloorPlanSchema, PolygonSchema } from "./floor-plan";
 import { AreaSchema, LengthSchema, PositiveLengthSchema } from "./provenance";
 

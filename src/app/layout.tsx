@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-import { cn } from "@/lib/utils";
 import { fontDisplay, fontSans } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
 
 import "./globals.css";
 

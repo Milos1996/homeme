@@ -19,9 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { projectSlug, apartmentId } = await params;
   const project = getProject(projectSlug);
   const apartment = getApartment(projectSlug, apartmentId);
-  return project && apartment
-    ? { title: `Apartment ${apartment.number} · ${project.name}` }
-    : {};
+  return project && apartment ? { title: `Apartment ${apartment.number} · ${project.name}` } : {};
 }
 
 export default async function ApartmentPage({ params }: Props) {

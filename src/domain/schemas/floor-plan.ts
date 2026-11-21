@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import { segmentLength } from "../geometry/segment";
 import type { FloorPlan, Opening, Point2, Room, Wall } from "../types";
-
 import { LengthSchema, PositiveLengthSchema } from "./provenance";
 
 export const Point2Schema = z.object({
