@@ -9,6 +9,8 @@ export const lindenCourt: Project = {
   tagline: "Find a place to call yours.",
   summary:
     "A fictional residential development: a raised ground floor plus seven floors around a central corridor with stairs and a lift.",
+  setting: "Leafy residential quarter, a short walk from a park and the tram line",
+  typicalUnitsPerFloor: 13,
   isDemo: true,
   building,
   apartments,

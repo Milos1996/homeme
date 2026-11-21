@@ -42,6 +42,10 @@ export interface Project {
   readonly name: string;
   readonly tagline: string;
   readonly summary: string;
+  /** Short description of the location style, e.g. "Leafy residential quarter". */
+  readonly setting: string;
+  /** Approximate number of apartments on a typical floor (marketing figure). */
+  readonly typicalUnitsPerFloor: number;
   /** True when the project and its inventory are fictional demo content. */
   readonly isDemo: boolean;
   readonly building: Building;
