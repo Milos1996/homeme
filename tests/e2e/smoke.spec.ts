@@ -23,7 +23,12 @@ test.describe("homepage smoke", () => {
     await expect(cta).toBeVisible();
     await expect(cta).toHaveAttribute("href", /\/projects\/linden-court/);
 
-    await expect(page.getByText(/fictional/i).first()).toBeVisible();
+    await expect(
+      page
+        .getByText(/fictional/i)
+        .filter({ visible: true })
+        .first(),
+    ).toBeVisible();
 
     expect(errors, `Console errors:\n${errors.join("\n")}`).toEqual([]);
   });
