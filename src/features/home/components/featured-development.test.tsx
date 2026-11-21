@@ -14,7 +14,7 @@ describe("FeaturedDevelopment", () => {
     expect(screen.getByText("Fictional demo development")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "Linden Court" })).toBeInTheDocument();
     expect(screen.getByText("Raised ground floor + 7 floors")).toBeInTheDocument();
-    expect(screen.getByText("~104 homes, ~13 per floor")).toBeInTheDocument();
+    expect(screen.getByText("101 homes, ~13 per floor")).toBeInTheDocument();
     expect(screen.getByText(project.setting)).toBeInTheDocument();
   });
 
