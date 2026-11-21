@@ -1,0 +1,207 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * HomeMe design tokens
+ * --------------------
+ * Every colour, radius, shadow, spacing step and font used in components
+ * comes from here. Components use the Tailwind utilities generated in
+ * `@theme inline` below (e.g. `bg-surface`, `text-forest`, `p-gutter`,
+ * `shadow-soft`) and never hardcode values.
+ *
+ * Palette: warm white, charcoal, sage / forest green. Light theme only.
+ */
+
+:root {
+  /* ---- Brand palette ---- */
+  --warm-white: oklch(0.982 0.006 85);
+  --paper: oklch(0.995 0.003 85);
+  --stone-100: oklch(0.955 0.008 80);
+  --stone-200: oklch(0.915 0.01 80);
+  --stone-400: oklch(0.72 0.012 75);
+  --stone-600: oklch(0.5 0.012 70);
+  --charcoal: oklch(0.255 0.008 60);
+  --charcoal-soft: oklch(0.34 0.008 60);
+  --sage-100: oklch(0.94 0.02 150);
+  --sage-300: oklch(0.83 0.04 150);
+  --sage-500: oklch(0.68 0.05 152);
+  --forest-600: oklch(0.47 0.06 155);
+  --forest-700: oklch(0.4 0.055 157);
+  --ochre-100: oklch(0.95 0.035 85);
+  --ochre-600: oklch(0.52 0.1 70);
+  --clay-600: oklch(0.55 0.15 32);
+
+  /* ---- Semantic roles (shadcn/ui contract) ---- */
+  --background: var(--warm-white);
+  --foreground: var(--charcoal);
+  --card: var(--paper);
+  --card-foreground: var(--charcoal);
+  --popover: var(--paper);
+  --popover-foreground: var(--charcoal);
+  --primary: var(--forest-700);
+  --primary-foreground: var(--warm-white);
+  --secondary: var(--stone-100);
+  --secondary-foreground: var(--charcoal);
+  --muted: var(--stone-100);
+  --muted-foreground: var(--stone-600);
+  --accent: var(--sage-100);
+  --accent-foreground: var(--forest-700);
+  --destructive: var(--clay-600);
+  --border: var(--stone-200);
+  --input: var(--stone-200);
+  --ring: var(--sage-500);
+
+  /* ---- Domain roles ---- */
+  /* Provenance: verified figures vs estimates. Never style an estimate as verified. */
+  --provenance-verified: var(--forest-700);
+  --provenance-verified-bg: var(--sage-100);
+  --provenance-estimated: var(--ochre-600);
+  --provenance-estimated-bg: var(--ochre-100);
+  /* Availability */
+  --status-available: var(--forest-600);
+  --status-reserved: var(--ochre-600);
+  --status-sold: var(--stone-600);
+
+  /* ---- Radius ---- */
+  --radius: 0.75rem;
+
+  /* ---- Shadows (warm, low-contrast) ---- */
+  --shadow-color: 60 8% 20%;
+  --shadow-soft: 0 1px 2px hsl(var(--shadow-color) / 0.04), 0 2px 8px hsl(var(--shadow-color) / 0.04);
+  --shadow-raised: 0 2px 4px hsl(var(--shadow-color) / 0.04), 0 12px 32px hsl(var(--shadow-color) / 0.08);
+  --shadow-floating: 0 4px 8px hsl(var(--shadow-color) / 0.05), 0 24px 64px hsl(var(--shadow-color) / 0.12);
+
+  /* ---- Spacing & layout ---- */
+  --space-gutter: clamp(1rem, 4vw, 2.5rem);
+  --space-section: clamp(4rem, 10vw, 9rem);
+  --space-stack: clamp(1.5rem, 3vw, 2.5rem);
+  --width-content: 76rem;
+  --width-prose: 40rem;
+  --header-height: 4.5rem;
+
+  /* ---- Motion ---- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 600ms;
+}
+
+@theme inline {
+  /* Fonts (set by next/font in app/layout.tsx) */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-heading: var(--font-display);
+
+  /* shadcn roles */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand palette as utilities */
+  --color-warm-white: var(--warm-white);
+  --color-paper: var(--paper);
+  --color-charcoal: var(--charcoal);
+  --color-charcoal-soft: var(--charcoal-soft);
+  --color-sage-100: var(--sage-100);
+  --color-sage-300: var(--sage-300);
+  --color-sage-500: var(--sage-500);
+  --color-forest-600: var(--forest-600);
+  --color-forest-700: var(--forest-700);
+  --color-stone-100: var(--stone-100);
+  --color-stone-200: var(--stone-200);
+  --color-stone-400: var(--stone-400);
+  --color-stone-600: var(--stone-600);
+
+  /* Domain roles as utilities */
+  --color-provenance-verified: var(--provenance-verified);
+  --color-provenance-verified-bg: var(--provenance-verified-bg);
+  --color-provenance-estimated: var(--provenance-estimated);
+  --color-provenance-estimated-bg: var(--provenance-estimated-bg);
+  --color-status-available: var(--status-available);
+  --color-status-reserved: var(--status-reserved);
+  --color-status-sold: var(--status-sold);
+
+  /* Radius scale */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.5);
+  --radius-4xl: calc(var(--radius) * 3);
+
+  /* Shadows → shadow-soft, shadow-raised, shadow-floating */
+  --shadow-soft: var(--shadow-soft);
+  --shadow-raised: var(--shadow-raised);
+  --shadow-floating: var(--shadow-floating);
+
+  /* Spacing → p-gutter, py-section, gap-stack, … */
+  --spacing-gutter: var(--space-gutter);
+  --spacing-section: var(--space-section);
+  --spacing-stack: var(--space-stack);
+  --spacing-header: var(--header-height);
+
+  /* Widths → max-w-content, max-w-prose-narrow */
+  --container-content: var(--width-content);
+  --container-prose-narrow: var(--width-prose);
+
+  /* Motion → ease-out-soft, duration via CSS vars */
+  --ease-out-soft: var(--ease-out-soft);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply bg-background font-sans text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight text-balance;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
