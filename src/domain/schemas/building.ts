@@ -44,6 +44,8 @@ export const ProjectSchema = z
     name: z.string().min(1),
     tagline: z.string().min(1),
     summary: z.string().min(1),
+    setting: z.string().min(1),
+    typicalUnitsPerFloor: z.number().int().positive(),
     isDemo: z.boolean(),
     building: BuildingSchema,
     apartments: z.array(ApartmentSchema),

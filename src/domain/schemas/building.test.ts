@@ -17,6 +17,8 @@ const project: Project = {
   name: "Test Court",
   tagline: "Tagline",
   summary: "Summary",
+  setting: "Setting",
+  typicalUnitsPerFloor: 4,
   isDemo: true,
   building: {
     footprint: [

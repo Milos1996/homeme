@@ -20,8 +20,10 @@ export function ApartmentDetails({ project, apartment }: ApartmentDetailsProps) 
       <dl className="mt-stack flex flex-wrap items-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-2">
           <dt className="sr-only">Area</dt>
-          <dd className="text-lg">{formatArea(apartment.area)}</dd>
-          <ProvenanceBadge provenance={apartment.area.provenance} />
+          <dd className="flex items-center gap-2 text-lg">
+            {formatArea(apartment.area)}
+            <ProvenanceBadge provenance={apartment.area.provenance} />
+          </dd>
         </div>
         <div>
           <dt className="sr-only">Rooms</dt>
