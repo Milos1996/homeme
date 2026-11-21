@@ -16,6 +16,7 @@ export interface ApartmentSceneProps {
   cameraMode: CameraMode;
   highlightedRoomId?: string | null;
   showLabels?: boolean;
+  onRoomSelect?: (roomId: string) => void;
   /**
    * DOM layer over the canvas that room labels render into. Passing a stable
    * element avoids drei's Html re-parenting labels when R3F connects events.
@@ -30,6 +31,7 @@ export function ApartmentScene({
   highlightedRoomId = null,
   showLabels = true,
   labelLayer,
+  onRoomSelect,
 }: ApartmentSceneProps) {
   const bounds = useMemo(
     () =>
@@ -84,7 +86,11 @@ export function ApartmentScene({
         <shadowMaterial opacity={0.08} />
       </mesh>
 
-      <ApartmentModel plan={plan} highlightedRoomId={highlightedRoomId} />
+      <ApartmentModel
+        plan={plan}
+        highlightedRoomId={highlightedRoomId}
+        {...(onRoomSelect ? { onRoomSelect } : {})}
+      />
 
       {showLabels &&
         labels.map((label) => (
@@ -98,7 +104,11 @@ export function ApartmentScene({
           >
             <span
               data-room-label={label.id}
-              className="rounded-full bg-paper/90 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-foreground shadow-soft backdrop-blur-sm"
+              className={
+                label.id === highlightedRoomId
+                  ? "rounded-full bg-forest-700 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-warm-white shadow-soft"
+                  : "rounded-full bg-paper/90 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-foreground shadow-soft backdrop-blur-sm"
+              }
             >
               {label.name}
             </span>

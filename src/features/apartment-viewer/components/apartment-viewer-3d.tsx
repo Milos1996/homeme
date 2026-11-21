@@ -1,7 +1,6 @@
 "use client";
 
 import { Box, ScanLine } from "lucide-react";
-import { useState } from "react";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { FloorPlan } from "@/domain/types";
@@ -13,19 +12,24 @@ interface ApartmentViewer3DProps {
   plan: FloorPlan;
   /** Accessible description of the scene, e.g. "3D model of apartment 0.01". */
   label: string;
+  cameraMode: CameraMode;
+  onCameraModeChange: (mode: CameraMode) => void;
   highlightedRoomId?: string | null;
+  onRoomSelect?: (roomId: string) => void;
   className?: string;
 }
 
-/** Interactive 3D model of an apartment with orbit and top-down camera presets. */
+/** Interactive 3D model of an apartment with orbit and top-down camera presets (controlled). */
 export function ApartmentViewer3D({
   plan,
   label,
+  cameraMode,
+  onCameraModeChange,
   highlightedRoomId = null,
+  onRoomSelect,
   className,
 }: ApartmentViewer3DProps) {
   const webgl = useWebGLSupport();
-  const [mode, setMode] = useState<CameraMode>("orbit");
 
   return (
     <div
@@ -55,14 +59,15 @@ export function ApartmentViewer3D({
           <LazyApartmentCanvas
             label={label}
             plan={plan}
-            cameraMode={mode}
+            cameraMode={cameraMode}
             highlightedRoomId={highlightedRoomId}
+            {...(onRoomSelect ? { onRoomSelect } : {})}
           />
 
           <ToggleGroup
             type="single"
-            value={mode}
-            onValueChange={(v) => v && setMode(v as CameraMode)}
+            value={cameraMode}
+            onValueChange={(v) => v && onCameraModeChange(v as CameraMode)}
             aria-label="Camera view"
             className="absolute top-4 right-4 rounded-full bg-paper/90 p-1 shadow-soft backdrop-blur-sm"
           >
