@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "linear-homeme": {
+      "type": "http",
+      "url": "https://mcp.linear.app/mcp"
+    }
+  }
+}
