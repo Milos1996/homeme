@@ -1,7 +1,7 @@
 import type { Building, Floor } from "@/domain/types";
 
 /** Raised ground floor (level 0) plus floors 1–7. */
-const floors: Floor[] = Array.from({ length: 8 }, (_, level) => ({
+export const floors: Floor[] = Array.from({ length: 8 }, (_, level) => ({
   id: `linden-court-l${level}`,
   level,
   label: level === 0 ? "Raised ground floor" : `Floor ${level}`,

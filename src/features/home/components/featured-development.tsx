@@ -15,7 +15,6 @@ interface FeaturedDevelopmentProps {
 export function FeaturedDevelopment({ project }: FeaturedDevelopmentProps) {
   const { building } = project;
   const aboveGround = building.floors.filter((f) => f.level > 0).length;
-  const approxUnits = building.floors.length * project.typicalUnitsPerFloor;
 
   const facts = [
     { icon: MapPin, label: "Setting", value: project.setting },
@@ -27,7 +26,7 @@ export function FeaturedDevelopment({ project }: FeaturedDevelopmentProps) {
     {
       icon: Building2,
       label: "Apartments",
-      value: `~${approxUnits} homes, ~${project.typicalUnitsPerFloor} per floor`,
+      value: `${project.apartments.length} homes, ~${project.typicalUnitsPerFloor} per floor`,
     },
     {
       icon: Ruler,
