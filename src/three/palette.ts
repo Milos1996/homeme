@@ -10,4 +10,7 @@ export const scenePalette = {
   highlight: "#5f7f69", // ≈ --forest-600
   selected: "#47664f", // ≈ --forest-700
   ground: "#f7f4ee", // ≈ --warm-white
+  wall: "#fbfaf7", // ≈ --paper
+  floor: "#d9cfbf", // warm oak, between --stone-200 and --stone-400
+  floorHighlight: "#c9d6cc", // ≈ --sage-300
 } as const;
