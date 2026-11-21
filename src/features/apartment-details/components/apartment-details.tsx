@@ -1,6 +1,7 @@
 import { ProvenanceBadge } from "@/components/common/provenance-badge";
 import { Section } from "@/components/layout/section";
 import type { Apartment, Project } from "@/domain/types";
+import { FloorPlan2D } from "@/features/apartment-viewer";
 import { DEMO_NOTICE } from "@/lib/constants";
 import { formatArea } from "@/lib/format";
 
@@ -30,6 +31,14 @@ export function ApartmentDetails({ project, apartment }: ApartmentDetailsProps) 
           <dd className="text-lg">{apartment.roomCount} rooms</dd>
         </div>
       </dl>
+      {apartment.floorPlan && (
+        <div className="mt-stack max-w-3xl rounded-3xl bg-card p-6 shadow-soft sm:p-10">
+          <FloorPlan2D
+            plan={apartment.floorPlan}
+            title={`Floor plan of apartment ${apartment.number}`}
+          />
+        </div>
+      )}
     </Section>
   );
 }
