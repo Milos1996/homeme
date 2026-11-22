@@ -18,6 +18,7 @@ export function BuildingExplorer({ project }: BuildingExplorerProps) {
       <p className="mt-4 max-w-prose-narrow text-muted-foreground">{project.summary}</p>
       <div className="mt-stack">
         <FloorExplorer
+          projectSlug={project.slug}
           projectName={project.name}
           building={project.building}
           floors={summarizeFloors(project)}

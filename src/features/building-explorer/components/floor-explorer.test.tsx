@@ -40,6 +40,7 @@ const units = summarizeUnits(project);
 const renderExplorer = () =>
   render(
     <FloorExplorer
+      projectSlug="linden-court"
       projectName="Linden Court"
       building={project.building}
       floors={floors}
@@ -110,6 +111,39 @@ describe("FloorExplorer", () => {
     const ground = floors.at(-1)!;
     expect(floorButton(0)).toHaveTextContent(
       `Raised ground floor${ground.counts.available} of 10 available`,
+    );
+  });
+
+  it("restores floor and filters from the URL and writes filter changes back", async () => {
+    const user = userEvent.setup();
+    window.history.replaceState(
+      null,
+      "",
+      "/projects/linden-court?floor=3&status=available&rooms=2",
+    );
+    renderExplorer();
+
+    expect(floorButton(3)).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Available" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "2 rooms" })).toHaveAttribute("aria-pressed", "true");
+
+    await user.click(screen.getByRole("button", { name: "Reserved" }));
+    expect(window.location.search).toBe("?floor=3&status=available%2Creserved&rooms=2");
+
+    await user.click(screen.getByRole("button", { name: "Clear filters" }));
+    expect(window.location.search).toBe("?floor=3");
+  });
+
+  it("links units to their apartment pages", async () => {
+    const user = userEvent.setup();
+    renderExplorer();
+    await user.click(floorButton(2));
+    expect(screen.getByRole("link", { name: /^2\.01/ })).toHaveAttribute(
+      "href",
+      "/projects/linden-court/apartments/lc-2-01",
     );
   });
 });
