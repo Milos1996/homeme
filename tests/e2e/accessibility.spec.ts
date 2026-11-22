@@ -15,6 +15,15 @@ test.describe("accessibility (axe, WCAG 2.2 AA)", () => {
       // Reduced motion makes entrance animations instant, so contrast is measured on final colours.
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path);
+      await page.waitForLoadState("networkidle");
+      // Pages that restore a floor from the URL apply it after hydration; scan the settled state.
+      const level = new URL(path, "http://x").searchParams.get("floor");
+      if (level !== null) {
+        await expect(page.getByTestId(`floor-button-${level}`)).toHaveAttribute(
+          "aria-pressed",
+          "true",
+        );
+      }
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
         .analyze();
