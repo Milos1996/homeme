@@ -5,7 +5,8 @@ import { useMemo } from "react";
 import type { Building } from "@/domain/types";
 import type { FloorInfo } from "@/three";
 
-import type { FloorSummary } from "../floor-summary";
+import type { FloorSummary, UnitSummary } from "../floor-summary";
+import { ApartmentPanel } from "./apartment-panel";
 import { BuildingViewer3D } from "./building-viewer-3d";
 import { FloorPicker } from "./floor-picker";
 import { useFloorUrl } from "../hooks/use-floor-url";
@@ -15,13 +16,17 @@ interface FloorExplorerProps {
   projectName: string;
   building: Building;
   floors: readonly FloorSummary[];
+  units: readonly UnitSummary[];
 }
 
 /** The 3D building and the floor list, sharing hover and selection through the explorer store. */
-export function FloorExplorer({ projectName, building, floors }: FloorExplorerProps) {
+export function FloorExplorer({ projectName, building, floors, units }: FloorExplorerProps) {
   const hoveredFloorId = useExplorerStore((s) => s.hoveredFloorId);
   const selectedFloorId = useExplorerStore((s) => s.selectedFloorId);
-  const { hoverFloor, selectFloor } = useExplorerStore.getState();
+  const availabilityFilter = useExplorerStore((s) => s.availabilityFilter);
+  const roomFilter = useExplorerStore((s) => s.roomFilter);
+  const { hoverFloor, selectFloor, setAvailabilityFilter, setRoomFilter, clearFilters } =
+    useExplorerStore.getState();
 
   useFloorUrl(floors, selectedFloorId, selectFloor);
 
@@ -34,6 +39,8 @@ export function FloorExplorer({ projectName, building, floors }: FloorExplorerPr
   );
 
   const toggle = (floorId: string) => selectFloor(floorId === selectedFloorId ? null : floorId);
+
+  const selectedFloor = floors.find((f) => f.id === selectedFloorId) ?? null;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -53,6 +60,17 @@ export function FloorExplorer({ projectName, building, floors }: FloorExplorerPr
         onSelect={toggle}
         onHover={hoverFloor}
       />
+      <div className="lg:col-span-2">
+        <ApartmentPanel
+          floor={selectedFloor}
+          units={units}
+          availabilityFilter={availabilityFilter}
+          roomFilter={roomFilter}
+          onAvailabilityFilterChange={setAvailabilityFilter}
+          onRoomFilterChange={setRoomFilter}
+          onClearFilters={clearFilters}
+        />
+      </div>
     </div>
   );
 }

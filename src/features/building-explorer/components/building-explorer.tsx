@@ -2,14 +2,14 @@ import { Section } from "@/components/layout/section";
 import type { Project } from "@/domain/types";
 import { DEMO_NOTICE } from "@/lib/constants";
 
-import { summarizeFloors } from "../floor-summary";
+import { summarizeFloors, summarizeUnits } from "../floor-summary";
 import { FloorExplorer } from "./floor-explorer";
 
 interface BuildingExplorerProps {
   project: Project;
 }
 
-/** Building explorer: 3D building with floor hover and selection. The apartment panel follows. */
+/** Building explorer: 3D building, floor list and the apartments on the selected floor. */
 export function BuildingExplorer({ project }: BuildingExplorerProps) {
   return (
     <Section>
@@ -21,6 +21,7 @@ export function BuildingExplorer({ project }: BuildingExplorerProps) {
           projectName={project.name}
           building={project.building}
           floors={summarizeFloors(project)}
+          units={summarizeUnits(project)}
         />
       </div>
     </Section>

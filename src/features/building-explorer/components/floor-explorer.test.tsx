@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getProject } from "@/data";
 
-import { summarizeFloors } from "../floor-summary";
+import { summarizeFloors, summarizeUnits } from "../floor-summary";
 import { useExplorerStore } from "../store";
 import { FloorExplorer } from "./floor-explorer";
 
@@ -36,8 +36,16 @@ vi.mock("@/three", () => ({
 
 const project = getProject("linden-court")!;
 const floors = summarizeFloors(project);
+const units = summarizeUnits(project);
 const renderExplorer = () =>
-  render(<FloorExplorer projectName="Linden Court" building={project.building} floors={floors} />);
+  render(
+    <FloorExplorer
+      projectName="Linden Court"
+      building={project.building}
+      floors={floors}
+      units={units}
+    />,
+  );
 const scene = () => screen.getByRole("img", { name: /3D model of Linden Court/ });
 const floorButton = (level: number) => screen.getByTestId(`floor-button-${level}`);
 

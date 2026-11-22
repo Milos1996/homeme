@@ -30,3 +30,24 @@ test.describe("building explorer floors", () => {
     await expect(tooltip).toContainText("available");
   });
 });
+
+test.describe("apartment panel", () => {
+  test("lists the selected floor's apartments and filters them", async ({ page }) => {
+    await page.goto("/projects/linden-court");
+    await expect(page.getByText("Choose a floor")).toBeVisible();
+
+    await page.getByTestId("floor-button-3").click();
+    const panel = page.getByTestId("apartment-panel");
+    await expect(panel.getByRole("heading", { name: "Floor 3" })).toBeVisible();
+    await expect(panel.getByRole("listitem")).toHaveCount(13);
+    await expect(panel).toContainText("estimated area");
+
+    await panel.getByRole("button", { name: "Sold" }).click();
+    const soldCount = await panel.locator('[data-availability="sold"]').count();
+    await expect(panel.getByRole("listitem")).toHaveCount(soldCount || 0);
+    if (soldCount === 0) await expect(panel).toContainText("No apartments match these filters.");
+
+    await panel.getByRole("button", { name: "Clear filters" }).first().click();
+    await expect(panel.getByRole("listitem")).toHaveCount(13);
+  });
+});

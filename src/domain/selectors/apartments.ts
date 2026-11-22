@@ -7,10 +7,12 @@ export interface ApartmentFilter {
 }
 
 /** Returns apartments matching every provided criterion. Empty or missing criteria match all. */
-export function filterApartments(
-  apartments: readonly Apartment[],
+type Filterable = Pick<Apartment, "floorId" | "availability" | "roomCount">;
+
+export function filterApartments<T extends Filterable>(
+  apartments: readonly T[],
   filter: ApartmentFilter,
-): Apartment[] {
+): T[] {
   const { floorId, availability, roomCounts } = filter;
   return apartments.filter(
     (a) =>
@@ -22,7 +24,7 @@ export function filterApartments(
 
 /** Counts apartments per availability state. Every state is present, defaulting to 0. */
 export function countByAvailability(
-  apartments: readonly Apartment[],
+  apartments: readonly Pick<Apartment, "availability">[],
 ): Record<Availability, number> {
   const counts: Record<Availability, number> = { available: 0, reserved: 0, sold: 0 };
   for (const a of apartments) counts[a.availability] += 1;
