@@ -28,3 +28,8 @@ export function formatPrice(price: Price): string {
     maximumFractionDigits: 0,
   }).format(price.amount);
 }
+
+/** "Studio" for one room, otherwise "N rooms". */
+export function formatRooms(rooms: number): string {
+  return rooms === 1 ? "Studio" : `${rooms} rooms`;
+}
