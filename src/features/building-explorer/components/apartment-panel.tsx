@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 
 import { AVAILABILITY_LABEL, AvailabilityBadge } from "@/components/common/availability-badge";
@@ -126,39 +127,55 @@ export function ApartmentPanel({
           </Button>
         </div>
       ) : (
-        <ul className="mt-4 divide-y divide-border" aria-label={`Apartments on ${floor.label}`}>
-          {shown.map((unit) => (
-            <li key={unit.id} data-testid={`unit-${unit.number}`}>
-              <Link
-                href={unitHref(unit.id)}
-                className="group -mx-3 grid grid-cols-[4rem_1fr_auto] items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-4 transition-colors duration-200 hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:grid-cols-[5rem_8rem_1fr_auto_8rem_1.25rem]"
+        <motion.ul
+          key={floor.id}
+          className="mt-4 divide-y divide-border"
+          aria-label={`Apartments on ${floor.label}`}
+          initial="hidden"
+          animate="shown"
+          variants={{ shown: { transition: { staggerChildren: 0.025 } } }}
+        >
+          <AnimatePresence initial={false}>
+            {shown.map((unit) => (
+              <motion.li
+                key={unit.id}
+                data-testid={`unit-${unit.number}`}
+                variants={{ hidden: { opacity: 0, y: 6 }, shown: { opacity: 1, y: 0 } }}
+                initial="hidden"
+                animate="shown"
+                exit={{ opacity: 0, transition: { duration: 0.12 } }}
               >
-                <span className="font-display text-xl">{unit.number}</span>
-                <span className="text-sm text-muted-foreground sm:text-base sm:text-foreground">
-                  {formatRooms(unit.roomCount)}
-                </span>
-                <span className="col-start-2 row-start-2 text-sm sm:col-start-auto sm:row-start-auto sm:text-base">
-                  {formatArea(unit.area)}
-                </span>
-                <AvailabilityBadge
-                  availability={unit.availability}
-                  className="col-start-3 row-span-2 row-start-1 justify-self-end sm:col-start-auto sm:row-span-1 sm:row-start-auto"
-                />
-                <span className="col-span-3 text-sm text-muted-foreground sm:col-span-1 sm:text-right sm:text-base sm:text-foreground">
-                  {unit.price
-                    ? formatPrice(unit.price)
-                    : unit.availability === "sold"
-                      ? "—"
-                      : "Price on request"}
-                </span>
-                <ArrowRight
-                  aria-hidden
-                  className="hidden size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 sm:block"
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <Link
+                  href={unitHref(unit.id)}
+                  className="group -mx-3 grid grid-cols-[4rem_1fr_auto] items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-4 transition-[background-color,transform] duration-200 hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.99] motion-reduce:active:scale-100 sm:grid-cols-[5rem_8rem_1fr_auto_8rem_1.25rem]"
+                >
+                  <span className="font-display text-xl">{unit.number}</span>
+                  <span className="text-sm text-muted-foreground sm:text-base sm:text-foreground">
+                    {formatRooms(unit.roomCount)}
+                  </span>
+                  <span className="col-start-2 row-start-2 text-sm sm:col-start-auto sm:row-start-auto sm:text-base">
+                    {formatArea(unit.area)}
+                  </span>
+                  <AvailabilityBadge
+                    availability={unit.availability}
+                    className="col-start-3 row-span-2 row-start-1 justify-self-end sm:col-start-auto sm:row-span-1 sm:row-start-auto"
+                  />
+                  <span className="col-span-3 text-sm text-muted-foreground sm:col-span-1 sm:text-right sm:text-base sm:text-foreground">
+                    {unit.price
+                      ? formatPrice(unit.price)
+                      : unit.availability === "sold"
+                        ? "—"
+                        : "Price on request"}
+                  </span>
+                  <ArrowRight
+                    aria-hidden
+                    className="hidden size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 sm:block"
+                  />
+                </Link>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </motion.ul>
       )}
     </section>
   );

@@ -41,7 +41,7 @@ export function FloorPicker({
                 onFocus={() => onHover(floor.id)}
                 onBlur={() => onHover(null)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-4 rounded-2xl px-4 py-3 text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  "flex w-full items-center justify-between gap-4 rounded-2xl px-4 py-3 text-left transition-[color,background-color,transform] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] motion-reduce:active:scale-100",
                   selected
                     ? "bg-forest-700 text-warm-white"
                     : hovered

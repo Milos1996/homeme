@@ -10,9 +10,13 @@ test.describe("explorer → apartment journey", () => {
     await panel.getByRole("button", { name: "Available" }).click();
     await expect(page).toHaveURL(/\?floor=3&status=available$/);
 
-    const first = panel.getByRole("link").first();
+    // Pick the first unit that is actually available (filtered-out rows may still be fading out).
+    const first = panel
+      .getByRole("listitem")
+      .filter({ has: page.locator('[data-availability="available"]') })
+      .first();
     const number = (await first.locator("span").first().textContent())!.trim();
-    await first.click();
+    await first.getByRole("link").click();
 
     await expect(page).toHaveURL(/\/projects\/linden-court\/apartments\/lc-3-\d{2}$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(`Apartment ${number}`);

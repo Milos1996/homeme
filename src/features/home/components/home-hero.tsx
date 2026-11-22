@@ -27,10 +27,13 @@ export function HomeHero({ project }: HomeHeroProps) {
           that fits.
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Button asChild size="lg" className="rounded-full px-6">
+          <Button asChild size="lg" className="group rounded-full px-6">
             <Link href={`/projects/${project.slug}`}>
               Explore in 3D
-              <ArrowRight aria-hidden />
+              <ArrowRight
+                aria-hidden
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
             </Link>
           </Button>
           <span className="text-sm text-muted-foreground">
