@@ -7,7 +7,7 @@ import { floorPlanPrisms } from "@/domain/geometry";
 import type { FloorPlan } from "@/domain/types";
 
 import { buildFloorSlab, buildWallGeometry } from "../geometry/apartment-geometry";
-import { scenePalette } from "../palette";
+import { material } from "../materials";
 
 interface ApartmentModelProps {
   plan: FloorPlan;
@@ -39,9 +39,13 @@ export function ApartmentModel({
   return (
     <group name="apartment">
       {walls && (
-        <mesh name="walls" geometry={walls} castShadow receiveShadow>
-          <meshStandardMaterial color={scenePalette.wall} roughness={0.92} />
-        </mesh>
+        <mesh
+          name="walls"
+          geometry={walls}
+          material={material("plaster")}
+          castShadow
+          receiveShadow
+        />
       )}
       <group name="floors">
         {floors.map(({ id, geometry }) => (
@@ -60,12 +64,8 @@ export function ApartmentModel({
                   onPointerOut: () => (document.body.style.cursor = ""),
                 }
               : {})}
-          >
-            <meshStandardMaterial
-              color={id === highlightedRoomId ? scenePalette.floorHighlight : scenePalette.floor}
-              roughness={0.85}
-            />
-          </mesh>
+            material={material(id === highlightedRoomId ? "oakHighlight" : "oak")}
+          />
         ))}
       </group>
     </group>

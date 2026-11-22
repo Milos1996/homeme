@@ -7,6 +7,8 @@ import { ApartmentScene } from "./apartment-scene";
 
 // Camera controls need a real DOM canvas; scene composition is what we test here.
 vi.mock("../camera/camera-rig", () => ({ CameraRig: () => null }));
+// The environment bakes a cube map with a real WebGL renderer; covered by e2e.
+vi.mock("../studio-environment", () => ({ StudioEnvironment: () => null }));
 
 describe("ApartmentScene", () => {
   it("composes lights, a shadow-catching ground and the apartment", async () => {

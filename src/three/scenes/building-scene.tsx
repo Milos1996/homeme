@@ -11,6 +11,7 @@ import { buildingPose, cameraLimits } from "../camera/presets";
 import { buildingLayout } from "../geometry/building-layout";
 import { BuildingShell } from "../meshes/building-shell";
 import { scenePalette } from "../palette";
+import { StudioEnvironment } from "../studio-environment";
 
 /** What the hover tooltip says about each floor. */
 export interface FloorInfo {
@@ -71,12 +72,13 @@ export function BuildingScene({
   return (
     <>
       <color attach="background" args={[scenePalette.ground]} />
-      <hemisphereLight args={[scenePalette.wall, scenePalette.slab, 1.4]} />
+      <hemisphereLight args={[scenePalette.wall, scenePalette.slab, 1.05]} />
+      <StudioEnvironment />
       <directionalLight
         position={[cx + span * 0.6, span * 1.6, cz + span * 0.9]}
         intensity={1.4}
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-camera-left={-span}
         shadow-camera-right={span}
         shadow-camera-top={span}

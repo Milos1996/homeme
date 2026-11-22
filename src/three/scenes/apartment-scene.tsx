@@ -11,6 +11,7 @@ import { cameraLimits, cameraPoses, type CameraMode } from "../camera/presets";
 import { ApartmentModel } from "../meshes/apartment-model";
 import { FurnitureLayer } from "../meshes/furniture-layer";
 import { scenePalette } from "../palette";
+import { StudioEnvironment } from "../studio-environment";
 
 export interface ApartmentSceneProps {
   plan: FloorPlan;
@@ -69,12 +70,13 @@ export function ApartmentScene({
   return (
     <>
       <color attach="background" args={[scenePalette.ground]} />
-      <hemisphereLight args={[scenePalette.wall, scenePalette.slab, 1.5]} />
+      <hemisphereLight args={[scenePalette.wall, scenePalette.slab, 1.1]} />
+      <StudioEnvironment />
       <directionalLight
         position={[cx + span * 0.35, span * 2.4, cz + span * 0.6]}
         intensity={1.25}
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-camera-left={-span}
         shadow-camera-right={span}
         shadow-camera-top={span}
