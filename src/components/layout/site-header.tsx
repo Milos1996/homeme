@@ -11,7 +11,7 @@ export function SiteHeader() {
       <Container className="flex h-header items-center justify-between">
         <Link
           href="/"
-          className="rounded-sm font-display text-xl tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+          className="tap-target rounded-sm font-display text-xl tracking-tight focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
         >
           {SITE_NAME}
           <span className="sr-only"> home</span>

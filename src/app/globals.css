@@ -197,6 +197,25 @@
     @apply outline-2 outline-offset-2 outline-ring;
   }
 
+  /* Touch screens: every control is at least 44 × 44 px (WCAG 2.5.5). Desktop is unaffected. */
+  @media (pointer: coarse) {
+    button,
+    [role="button"],
+    [role="radio"],
+    [data-slot="button"],
+    input:not([type="checkbox"], [type="radio"]),
+    textarea,
+    select {
+      min-height: 44px;
+    }
+
+    button,
+    [role="radio"],
+    [data-size^="icon"] {
+      min-width: 44px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -206,5 +225,15 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* Standalone text links (nav, footer, back links) get a 44 px touch target on touch screens. */
+@utility tap-target {
+  @media (pointer: coarse) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    min-width: 44px;
   }
 }

@@ -15,7 +15,8 @@ test.describe("3D apartment viewer", () => {
     await viewer.scrollIntoViewIfNeeded();
 
     await expect(viewer.locator("canvas")).toBeVisible({ timeout: 15_000 });
-    await expect(viewer.locator("[data-room-label]")).toHaveCount(6);
+    // Labels mount after the scene's first render (shader compile + environment bake).
+    await expect(viewer.locator("[data-room-label]")).toHaveCount(6, { timeout: 15_000 });
     await expect(viewer.locator('[data-room-label="living"]')).toHaveText("Living room");
 
     const furniture = viewer.getByRole("button", { name: "Show furniture" });

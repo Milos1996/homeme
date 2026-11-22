@@ -27,7 +27,7 @@ export function ApartmentDetails({ project, apartment }: ApartmentDetailsProps) 
     <Section>
       <Link
         href={explorerHref(project.slug, floor?.level)}
-        className="mb-6 inline-flex items-center gap-2 rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        className="mb-6 tap-target inline-flex items-center gap-2 rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <ArrowLeft aria-hidden className="size-4" />
         Back to {floor ? floor.label : project.name}

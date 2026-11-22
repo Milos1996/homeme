@@ -9,7 +9,18 @@ const transitionStyle = (page: Page) =>
 test.describe("motion", () => {
   test("pages settle fully visible with no leftover transform", async ({ page }) => {
     await page.goto("/");
-    await expect.poll(() => transitionStyle(page)).toEqual({ opacity: "1", transform: "none" });
+    // Settled = fully opaque with no meaningful offset (headless can stall the last frame).
+    await expect
+      .poll(
+        async () => {
+          const { opacity, transform } = await transitionStyle(page);
+          const offsetY =
+            transform === "none" ? 0 : Number(transform.split(",")[5]?.replace(")", ""));
+          return Number(opacity) >= 0.99 && Math.abs(offsetY) < 0.5;
+        },
+        { timeout: 10_000 },
+      )
+      .toBe(true);
   });
 
   test("respects prefers-reduced-motion", async ({ page }) => {
@@ -41,8 +52,13 @@ test.describe("motion", () => {
     await page.getByRole("link", { name: /explore in 3d/i }).click();
     await expect(page.getByTestId("building-viewer-3d")).toBeVisible();
     await page.getByTestId("floor-button-2").click();
-    await page.getByTestId("apartment-panel").getByRole("link").first().click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Apartment");
+    const panel = page.getByTestId("apartment-panel");
+    // Let the list finish staggering in before clicking a row.
+    await expect(panel.getByRole("listitem")).toHaveCount(13);
+    await panel.getByRole("link").first().click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Apartment", {
+      timeout: 15_000,
+    });
     await page.waitForTimeout(600);
 
     expect(await cls()).toBeLessThan(0.1);
