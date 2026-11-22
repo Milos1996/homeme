@@ -4,6 +4,7 @@
  * exposed through client-only lazy wrappers.
  */
 export type { CameraMode } from "./camera/presets";
+export type { FloorInfo } from "./scenes/building-scene";
 export { LazyApartmentCanvas } from "./lazy-apartment-canvas";
 export { LazyBuildingCanvas } from "./lazy-building-canvas";
 export { LazySceneCanvas } from "./lazy-scene-canvas";

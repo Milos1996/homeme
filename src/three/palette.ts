@@ -17,4 +17,8 @@ export const scenePalette = {
   wood: "#b59f84", // warm oak, darker than the floor
   ceramic: "#fdfcfa", // ≈ --paper
   lacquer: "#e9e4da", // ≈ --stone-200
+  facadeHover: "#c9d6cc", // ≈ --sage-300
+  facadeSelected: "#7d9a85", // between --sage-500 and --forest-600
+  glazingHover: "#b3c6b8", // sage glass
+  glazingSelected: "#5f7f69", // ≈ --forest-600
 } as const;
