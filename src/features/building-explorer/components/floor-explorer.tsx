@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import type { Building } from "@/domain/types";
 import type { FloorInfo } from "@/three";
@@ -9,10 +9,11 @@ import type { FloorSummary, UnitSummary } from "../floor-summary";
 import { ApartmentPanel } from "./apartment-panel";
 import { BuildingViewer3D } from "./building-viewer-3d";
 import { FloorPicker } from "./floor-picker";
-import { useFloorUrl } from "../hooks/use-floor-url";
+import { useExplorerUrl } from "../hooks/use-explorer-url";
 import { useExplorerStore } from "../store";
 
 interface FloorExplorerProps {
+  projectSlug: string;
   projectName: string;
   building: Building;
   floors: readonly FloorSummary[];
@@ -20,7 +21,13 @@ interface FloorExplorerProps {
 }
 
 /** The 3D building and the floor list, sharing hover and selection through the explorer store. */
-export function FloorExplorer({ projectName, building, floors, units }: FloorExplorerProps) {
+export function FloorExplorer({
+  projectSlug,
+  projectName,
+  building,
+  floors,
+  units,
+}: FloorExplorerProps) {
   const hoveredFloorId = useExplorerStore((s) => s.hoveredFloorId);
   const selectedFloorId = useExplorerStore((s) => s.selectedFloorId);
   const availabilityFilter = useExplorerStore((s) => s.availabilityFilter);
@@ -28,7 +35,21 @@ export function FloorExplorer({ projectName, building, floors, units }: FloorExp
   const { hoverFloor, selectFloor, setAvailabilityFilter, setRoomFilter, clearFilters } =
     useExplorerStore.getState();
 
-  useFloorUrl(floors, selectedFloorId, selectFloor);
+  const apply = useCallback(
+    (s: { floorId: string | null; availability: typeof availabilityFilter; rooms: number[] }) => {
+      selectFloor(s.floorId);
+      setAvailabilityFilter(s.availability);
+      setRoomFilter(s.rooms);
+    },
+    [selectFloor, setAvailabilityFilter, setRoomFilter],
+  );
+  useExplorerUrl({
+    floors,
+    selectedFloorId,
+    availability: availabilityFilter,
+    rooms: roomFilter,
+    apply,
+  });
 
   const floorInfo = useMemo(
     () =>
@@ -69,6 +90,7 @@ export function FloorExplorer({ projectName, building, floors, units }: FloorExp
           onAvailabilityFilterChange={setAvailabilityFilter}
           onRoomFilterChange={setRoomFilter}
           onClearFilters={clearFilters}
+          unitHref={(unitId) => `/projects/${projectSlug}/apartments/${unitId}`}
         />
       </div>
     </div>

@@ -1,5 +1,8 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+
 import { AVAILABILITY_LABEL, AvailabilityBadge } from "@/components/common/availability-badge";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -22,6 +25,8 @@ interface ApartmentPanelProps {
   onAvailabilityFilterChange: (values: Availability[]) => void;
   onRoomFilterChange: (values: number[]) => void;
   onClearFilters: () => void;
+  /** Link target for a unit's detail page. */
+  unitHref: (unitId: string) => string;
 }
 
 /** Apartments on the selected floor, with availability and room-count filters. */
@@ -33,6 +38,7 @@ export function ApartmentPanel({
   onAvailabilityFilterChange,
   onRoomFilterChange,
   onClearFilters,
+  unitHref,
 }: ApartmentPanelProps) {
   if (!floor) {
     return (
@@ -124,29 +130,34 @@ export function ApartmentPanel({
       ) : (
         <ul className="mt-4 divide-y divide-border" aria-label={`Apartments on ${floor.label}`}>
           {shown.map((unit) => (
-            <li
-              key={unit.id}
-              data-testid={`unit-${unit.number}`}
-              className="grid grid-cols-[4rem_1fr_auto] items-center gap-x-4 gap-y-1 py-4 sm:grid-cols-[5rem_8rem_1fr_auto_8rem]"
-            >
-              <span className="font-display text-xl">{unit.number}</span>
-              <span className="text-sm text-muted-foreground sm:text-base sm:text-foreground">
-                {roomLabel(unit.roomCount)}
-              </span>
-              <span className="col-start-2 row-start-2 text-sm sm:col-start-auto sm:row-start-auto sm:text-base">
-                {formatArea(unit.area)}
-              </span>
-              <AvailabilityBadge
-                availability={unit.availability}
-                className="col-start-3 row-span-2 row-start-1 justify-self-end sm:col-start-auto sm:row-span-1 sm:row-start-auto"
-              />
-              <span className="col-span-3 text-sm text-muted-foreground sm:col-span-1 sm:text-right sm:text-base sm:text-foreground">
-                {unit.price
-                  ? formatPrice(unit.price)
-                  : unit.availability === "sold"
-                    ? "—"
-                    : "Price on request"}
-              </span>
+            <li key={unit.id} data-testid={`unit-${unit.number}`}>
+              <Link
+                href={unitHref(unit.id)}
+                className="group -mx-3 grid grid-cols-[4rem_1fr_auto] items-center gap-x-4 gap-y-1 rounded-2xl px-3 py-4 transition-colors duration-200 hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:grid-cols-[5rem_8rem_1fr_auto_8rem_1.25rem]"
+              >
+                <span className="font-display text-xl">{unit.number}</span>
+                <span className="text-sm text-muted-foreground sm:text-base sm:text-foreground">
+                  {roomLabel(unit.roomCount)}
+                </span>
+                <span className="col-start-2 row-start-2 text-sm sm:col-start-auto sm:row-start-auto sm:text-base">
+                  {formatArea(unit.area)}
+                </span>
+                <AvailabilityBadge
+                  availability={unit.availability}
+                  className="col-start-3 row-span-2 row-start-1 justify-self-end sm:col-start-auto sm:row-span-1 sm:row-start-auto"
+                />
+                <span className="col-span-3 text-sm text-muted-foreground sm:col-span-1 sm:text-right sm:text-base sm:text-foreground">
+                  {unit.price
+                    ? formatPrice(unit.price)
+                    : unit.availability === "sold"
+                      ? "—"
+                      : "Price on request"}
+                </span>
+                <ArrowRight
+                  aria-hidden
+                  className="hidden size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 sm:block"
+                />
+              </Link>
             </li>
           ))}
         </ul>

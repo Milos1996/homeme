@@ -29,6 +29,7 @@ function Panel({ floor }: { floor: FloorSummary | null }) {
         setAvailability([]);
         setRooms([]);
       }}
+      unitHref={(id) => `/projects/linden-court/apartments/${id}`}
     />
   );
 }
@@ -109,6 +110,7 @@ describe("ApartmentPanel", () => {
           onAvailabilityFilterChange={setAvailability}
           onRoomFilterChange={() => {}}
           onClearFilters={() => setAvailability([])}
+          unitHref={(id) => `/u/${id}`}
         />
       );
     }
@@ -126,5 +128,12 @@ describe("ApartmentPanel", () => {
     // The raised ground floor has no 4-room homes.
     expect(screen.queryByRole("button", { name: "4 rooms" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Studio" })).toBeInTheDocument();
+  });
+
+  it("links every unit to its detail page", () => {
+    render(<Panel floor={floor3} />);
+    const link = within(screen.getByTestId("unit-3.02")).getByRole("link");
+    expect(link).toHaveAttribute("href", "/projects/linden-court/apartments/lc-3-02");
+    expect(link).toHaveAccessibleName(/3\.02/);
   });
 });
