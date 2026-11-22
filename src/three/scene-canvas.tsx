@@ -22,6 +22,8 @@ export default function SceneCanvas({ label, children, ...props }: SceneCanvasPr
       performance={{ min: 0.6 }}
       gl={{ powerPreference: "high-performance", antialias: true }}
       shadows
+      // Touch drags orbit / pinch-zoom the scene instead of scrolling the page.
+      style={{ touchAction: "none" }}
       aria-label={label}
       role="img"
       {...props}

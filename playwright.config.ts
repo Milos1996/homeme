@@ -14,7 +14,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
-  ...(isCI ? { workers: 2 } : {}),
+  // Each worker runs WebGL scenes; too many parallel GPU contexts makes canvases fail to start.
+  workers: isCI ? 2 : 3,
   reporter: isCI
     ? [["github"], ["html", { open: "never" }]]
     : [["list"], ["html", { open: "never" }]],

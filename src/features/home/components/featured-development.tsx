@@ -51,7 +51,7 @@ export function FeaturedDevelopment({ project }: FeaturedDevelopmentProps) {
           <p className="mt-4 max-w-prose-narrow text-lg text-muted-foreground">{project.summary}</p>
           <Link
             href={`/projects/${project.slug}`}
-            className="mt-8 inline-flex items-center gap-2 rounded-sm font-medium text-forest-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+            className="mt-8 tap-target inline-flex items-center gap-2 rounded-sm font-medium text-forest-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
           >
             Explore {project.name} in 3D
             <ArrowRight aria-hidden className="size-4" />

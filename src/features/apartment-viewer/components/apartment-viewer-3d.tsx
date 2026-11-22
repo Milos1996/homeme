@@ -60,16 +60,16 @@ export function ApartmentViewer3D({
             {...(onRoomSelect ? { onRoomSelect } : {})}
           />
 
-          <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="absolute top-3 right-3 flex items-center gap-2 sm:top-4 sm:right-4">
             {onShowFurnitureChange && (plan.furniture?.length ?? 0) > 0 && (
               <Toggle
                 pressed={showFurniture}
                 onPressedChange={onShowFurnitureChange}
                 aria-label="Show furniture"
-                className="rounded-full bg-paper/90 px-3 shadow-soft backdrop-blur-sm data-[state=on]:bg-forest-700 data-[state=on]:text-warm-white"
+                className="rounded-full bg-paper/90 px-3 shadow-soft backdrop-blur-sm data-[state=on]:bg-forest-700 data-[state=on]:text-warm-white pointer-coarse:min-w-11"
               >
                 <Sofa aria-hidden />
-                <span className="text-xs">Furniture</span>
+                <span className="text-xs max-sm:sr-only">Furniture</span>
               </Toggle>
             )}
             <ToggleGroup
@@ -79,13 +79,21 @@ export function ApartmentViewer3D({
               aria-label="Camera view"
               className="rounded-full bg-paper/90 p-1 shadow-soft backdrop-blur-sm"
             >
-              <ToggleGroupItem value="orbit" aria-label="3D view" className="rounded-full px-3">
+              <ToggleGroupItem
+                value="orbit"
+                aria-label="3D view"
+                className="rounded-full px-3 pointer-coarse:min-w-11"
+              >
                 <Box aria-hidden />
-                <span className="text-xs">3D</span>
+                <span className="text-xs max-sm:sr-only">3D</span>
               </ToggleGroupItem>
-              <ToggleGroupItem value="top" aria-label="Top-down view" className="rounded-full px-3">
+              <ToggleGroupItem
+                value="top"
+                aria-label="Top-down view"
+                className="rounded-full px-3 pointer-coarse:min-w-11"
+              >
                 <ScanLine aria-hidden />
-                <span className="text-xs">Top</span>
+                <span className="text-xs max-sm:sr-only">Top</span>
               </ToggleGroupItem>
             </ToggleGroup>
           </div>
