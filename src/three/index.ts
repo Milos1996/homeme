@@ -5,6 +5,7 @@
  */
 export type { CameraMode } from "./camera/presets";
 export { LazyApartmentCanvas } from "./lazy-apartment-canvas";
+export { LazyBuildingCanvas } from "./lazy-building-canvas";
 export { LazySceneCanvas } from "./lazy-scene-canvas";
 export { scenePalette } from "./palette";
 export { SceneLoading } from "./scene-loading";

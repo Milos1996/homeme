@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { cameraLimits, cameraPoses } from "./presets";
+import { buildingPose, cameraLimits, cameraPoses } from "./presets";
 
 const bounds = { minX: 0, minY: 0, maxX: 9, maxY: 7, width: 9, height: 7 };
 
@@ -32,5 +32,26 @@ describe("camera presets", () => {
     expect(distance).toBeGreaterThan(limits.minDistance);
     expect(distance).toBeLessThan(limits.maxDistance);
     expect(limits.maxPolarAngle).toBeLessThan(Math.PI / 2);
+  });
+});
+
+describe("buildingPose", () => {
+  const wide = { minX: 0, minY: 0, maxX: 62, maxY: 16, width: 62, height: 16 };
+
+  it("looks at the building's centre from a low three-quarter angle", () => {
+    const { position, target } = buildingPose(wide, 25.2);
+    expect(target).toEqual([31, expect.closeTo(10.08, 6) as number, 8]);
+    const [x, y, z] = position;
+    const horizontal = Math.hypot(x - 31, z - 8);
+    // Low angle: more horizontal distance than height above the target.
+    expect(horizontal).toBeGreaterThan(y - target[1]);
+    expect(y).toBeGreaterThan(target[1]);
+  });
+
+  it("backs off further for wider buildings", () => {
+    const narrow = { ...wide, maxX: 20, width: 20 };
+    const d = (p: ReturnType<typeof buildingPose>) =>
+      Math.hypot(p.position[0] - p.target[0], p.position[2] - p.target[2]);
+    expect(d(buildingPose(wide, 25))).toBeGreaterThan(d(buildingPose(narrow, 25)));
   });
 });

@@ -40,3 +40,15 @@ test.describe("site navigation", () => {
     await expect(page).toHaveURL(/#content$/);
   });
 });
+
+test.describe("building explorer", () => {
+  test("renders the 3D building", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (err) => errors.push(err.message));
+    await page.goto("/projects/linden-court");
+    await expect(page.getByTestId("building-viewer-3d").locator("canvas")).toBeVisible({
+      timeout: 15_000,
+    });
+    expect(errors).toEqual([]);
+  });
+});

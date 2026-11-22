@@ -2,6 +2,7 @@
 
 import { Box, ScanLine, Sofa } from "lucide-react";
 
+import { WebGLFallback } from "@/components/common/webgl-fallback";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { FloorPlan } from "@/domain/types";
@@ -46,18 +47,7 @@ export function ApartmentViewer3D({
     >
       {webgl === null && <SceneLoading />}
 
-      {webgl === false && (
-        <div
-          role="status"
-          className="flex size-full flex-col items-center justify-center gap-2 p-8 text-center"
-        >
-          <p className="font-display text-xl">3D view isn&apos;t available</p>
-          <p className="max-w-prose-narrow text-sm text-muted-foreground">
-            Your browser or device doesn&apos;t support WebGL. The 2D floor plan shows the same
-            layout.
-          </p>
-        </div>
-      )}
+      {webgl === false && <WebGLFallback alternative="The 2D floor plan shows the same layout." />}
 
       {webgl && (
         <>
