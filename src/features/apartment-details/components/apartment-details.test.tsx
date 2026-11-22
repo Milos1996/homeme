@@ -46,6 +46,7 @@ describe("ApartmentDetails", () => {
       "~63 m²",
     );
     expect(screen.getByTestId("provenance-legend")).toHaveTextContent("estimated figure");
+    expect(screen.getByRole("form", { name: "Inquiry" })).toBeInTheDocument();
     expect(screen.queryByText("Verified")).not.toBeInTheDocument();
   });
 
@@ -67,6 +68,7 @@ describe("ApartmentDetails", () => {
     expect(screen.queryByTestId("apartment-price")).not.toBeInTheDocument();
     expect(screen.getByText("This home has been sold")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Ask about this home" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("form", { name: "Inquiry" })).not.toBeInTheDocument();
   });
 
   it("links back to the unit's floor", () => {

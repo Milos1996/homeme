@@ -29,3 +29,25 @@ test.describe("apartment detail page", () => {
     await expect(page.getByRole("table")).toHaveCount(0);
   });
 });
+
+test.describe("inquiry form", () => {
+  test("validates, then shows a success state without sending anything", async ({ page }) => {
+    await page.goto("/projects/linden-court/apartments/lc-0-01");
+    const sent: string[] = [];
+    page.on("request", (r) => {
+      if (r.method() !== "GET") sent.push(`${r.method()} ${r.url()}`);
+    });
+
+    const form = page.getByRole("form", { name: "Inquiry" });
+    await form.getByRole("button", { name: "Send inquiry" }).click();
+    await expect(form.getByText("Please enter your name.")).toBeVisible();
+
+    await form.getByLabel("Name").fill("Ana");
+    await form.getByLabel("Email").fill("ana@example.com");
+    await form.getByLabel("Message").fill("I'd like to arrange a viewing.");
+    await form.getByRole("button", { name: "Send inquiry" }).click();
+
+    await expect(page.getByTestId("inquiry-success")).toContainText("Thank you, Ana.");
+    expect(sent).toEqual([]);
+  });
+});

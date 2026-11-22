@@ -9,6 +9,7 @@ import { DEMO_NOTICE } from "@/lib/constants";
 import { formatRooms } from "@/lib/format";
 
 import { ApartmentSpecs } from "./apartment-specs";
+import { InquiryForm } from "./inquiry-form";
 import { PlanComingSoon } from "./plan-coming-soon";
 import { RoomBreakdown } from "./room-breakdown";
 
@@ -73,10 +74,16 @@ export function ApartmentDetails({ project, apartment }: ApartmentDetailsProps) 
           <h2 id="inquiry-heading" className="text-3xl">
             Ask about this home
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            The inquiry form is on its way. {project.name} is a fictional demo, so no real sales
-            team is behind it.
+          <p className="mt-3 mb-6 text-muted-foreground">
+            {project.name} is a fictional demo, so no real sales team is behind this form.
           </p>
+          {apartment.availability === "sold" ? (
+            <p className="text-muted-foreground">
+              This home has been sold. Explore other apartments on the same floor.
+            </p>
+          ) : (
+            <InquiryForm apartmentLabel={`Apartment ${apartment.number} · ${project.name}`} />
+          )}
         </section>
       </div>
     </Section>
