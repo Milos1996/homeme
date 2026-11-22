@@ -1,5 +1,5 @@
 import { countByAvailability, filterApartments } from "@/domain/selectors";
-import type { Availability, Project } from "@/domain/types";
+import type { Apartment, Availability, Project } from "@/domain/types";
 
 /** Serializable per-floor summary passed from the server to the explorer. */
 export interface FloorSummary {
@@ -24,4 +24,14 @@ export function summarizeFloors(project: Project): FloorSummary[] {
         counts: countByAvailability(units),
       };
     });
+}
+
+/** An apartment without its (heavy) floor plan, for lists on the client. */
+export type UnitSummary = Omit<Apartment, "floorPlan"> & { readonly hasPlan: boolean };
+
+export function summarizeUnits(project: Project): UnitSummary[] {
+  return project.apartments.map(({ floorPlan, ...unit }) => ({
+    ...unit,
+    hasPlan: floorPlan !== undefined,
+  }));
 }
