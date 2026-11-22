@@ -1,9 +1,10 @@
 import ReactThreeTestRenderer from "@react-three/test-renderer";
 import { InstancedMesh, Matrix4, Vector3 } from "three";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { building } from "@/data/projects/linden-court/building";
 
+import { scenePalette } from "../palette";
 import { BuildingShell } from "./building-shell";
 import { buildingLayout, STOREY } from "../geometry/building-layout";
 
@@ -56,5 +57,44 @@ describe("BuildingShell", () => {
     mullions.getMatrixAt(0, m);
     const y = new Vector3().setFromMatrixPosition(m).y;
     expect(y).toBeCloseTo(1.2 + STOREY.slabThickness + STOREY.sill + STOREY.glazingHeight / 2);
+  });
+});
+
+describe("BuildingShell interaction", () => {
+  it("selects the floor whose facade is clicked and ignores decorative parts", async () => {
+    const onFloorSelect = vi.fn();
+    const renderer = await ReactThreeTestRenderer.create(
+      <BuildingShell building={building} onFloorSelect={onFloorSelect} />,
+    );
+    // The test renderer doesn't bubble, so fire on the shell with the facade as the hit object.
+    const shell = renderer.scene.findByProps({ name: "building-shell" });
+    const facade = renderer.scene.findByProps({ name: "linden-court-l4" }).children[1]!;
+    const stopPropagation = vi.fn();
+    await renderer.fireEvent(shell, "click", { object: facade.instance, stopPropagation });
+    expect(onFloorSelect).toHaveBeenCalledWith("linden-court-l4");
+    expect(stopPropagation).toHaveBeenCalled();
+
+    const plinth = renderer.scene.findByProps({ name: "plinth" });
+    await renderer.fireEvent(shell, "click", { object: plinth.instance, stopPropagation });
+    expect(onFloorSelect).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses the hover and selected materials for those floors", async () => {
+    const renderer = await ReactThreeTestRenderer.create(
+      <BuildingShell
+        building={building}
+        hoveredFloorId="linden-court-l1"
+        selectedFloorId="linden-court-l2"
+      />,
+    );
+    const color = (id: string) =>
+      (
+        renderer.scene.findByProps({ name: id }).children[1]!.instance as unknown as {
+          material: { color: { getHexString: () => string } };
+        }
+      ).material.color.getHexString();
+    expect(color("linden-court-l1")).toBe(scenePalette.facadeHover.slice(1));
+    expect(color("linden-court-l2")).toBe(scenePalette.facadeSelected.slice(1));
+    expect(color("linden-court-l3")).toBe(scenePalette.facade.slice(1));
   });
 });

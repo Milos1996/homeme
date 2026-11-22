@@ -55,3 +55,16 @@ describe("buildingPose", () => {
     expect(d(buildingPose(wide, 25))).toBeGreaterThan(d(buildingPose(narrow, 25)));
   });
 });
+
+describe("buildingPose focus", () => {
+  const wide = { minX: 0, minY: 0, maxX: 62, maxY: 16, width: 62, height: 16 };
+
+  it("centres on a floor and moves closer", () => {
+    const overview = buildingPose(wide, 25.2);
+    const focused = buildingPose(wide, 25.2, { focusY: 11.7, zoom: 0.6 });
+    expect(focused.target[1]).toBe(11.7);
+    const dist = (p: typeof overview) =>
+      Math.hypot(...(p.position.map((v, i) => v - p.target[i]!) as [number, number, number]));
+    expect(dist(focused)).toBeCloseTo(dist(overview) * 0.6);
+  });
+});

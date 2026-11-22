@@ -1,5 +1,6 @@
 "use client";
 
+import type { ThreeEvent } from "@react-three/fiber";
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { BoxGeometry, MeshStandardMaterial, Object3D } from "three";
 import type { BufferGeometry, InstancedMesh } from "three";
@@ -13,7 +14,22 @@ import { scenePalette } from "../palette";
 
 interface BuildingShellProps {
   building: Building;
+  hoveredFloorId?: string | null;
+  selectedFloorId?: string | null;
+  onFloorHover?: (floorId: string | null) => void;
+  onFloorSelect?: (floorId: string) => void;
 }
+
+/** Walks up from the hit object to the floor group that owns it. */
+function floorIdOf(object: Object3D | null): string | null {
+  for (let o = object; o; o = o.parent) {
+    const id = (o.userData as { floorId?: unknown }).floorId;
+    if (typeof id === "string") return id;
+  }
+  return null;
+}
+
+const noRaycast = () => null;
 
 /**
  * Procedural building exterior from the footprint, floor count and storey
@@ -24,7 +40,13 @@ interface BuildingShellProps {
  * Every floor reuses the same three geometries; all mullions are one
  * InstancedMesh, so the whole building is ~3 draw calls per floor.
  */
-export function BuildingShell({ building }: BuildingShellProps) {
+export function BuildingShell({
+  building,
+  hoveredFloorId = null,
+  selectedFloorId = null,
+  onFloorHover,
+  onFloorSelect,
+}: BuildingShellProps) {
   const layout = useMemo(() => buildingLayout(building), [building]);
   const { storeyHeight } = layout;
   const glazingBottom = STOREY.slabThickness + STOREY.sill;
@@ -46,11 +68,26 @@ export function BuildingShell({ building }: BuildingShellProps) {
   const materials = useMemo(
     () => ({
       facade: new MeshStandardMaterial({ color: scenePalette.facade, roughness: 0.9 }),
+      facadeHover: new MeshStandardMaterial({ color: scenePalette.facadeHover, roughness: 0.9 }),
+      facadeSelected: new MeshStandardMaterial({
+        color: scenePalette.facadeSelected,
+        roughness: 0.85,
+      }),
       slab: new MeshStandardMaterial({ color: scenePalette.slab, roughness: 0.85 }),
       glazing: new MeshStandardMaterial({
         color: scenePalette.glazing,
         roughness: 0.15,
         metalness: 0.2,
+      }),
+      glazingHover: new MeshStandardMaterial({
+        color: scenePalette.glazingHover,
+        roughness: 0.15,
+        metalness: 0.2,
+      }),
+      glazingSelected: new MeshStandardMaterial({
+        color: scenePalette.glazingSelected,
+        roughness: 0.2,
+        metalness: 0.15,
       }),
     }),
     [],
@@ -94,8 +131,41 @@ export function BuildingShell({ building }: BuildingShellProps) {
   }, [layout.floors, mullionSpots, glazingBottom]);
 
   return (
-    <group name="building-shell">
-      <mesh name="plinth" geometry={geometries.plinth} material={materials.slab} receiveShadow />
+    <group
+      name="building-shell"
+      {...(onFloorHover
+        ? {
+            onPointerMove: (e: ThreeEvent<PointerEvent>) => {
+              const id = floorIdOf(e.object);
+              if (!id) return;
+              e.stopPropagation();
+              if (id !== hoveredFloorId) onFloorHover(id);
+              document.body.style.cursor = "pointer";
+            },
+            onPointerOut: () => {
+              onFloorHover(null);
+              document.body.style.cursor = "";
+            },
+          }
+        : {})}
+      {...(onFloorSelect
+        ? {
+            onClick: (e: ThreeEvent<MouseEvent>) => {
+              const id = floorIdOf(e.object);
+              if (!id) return;
+              e.stopPropagation();
+              onFloorSelect(id);
+            },
+          }
+        : {})}
+    >
+      <mesh
+        name="plinth"
+        geometry={geometries.plinth}
+        material={materials.slab}
+        raycast={noRaycast}
+        receiveShadow
+      />
 
       {layout.floors.map((floor) => (
         <group
@@ -105,8 +175,30 @@ export function BuildingShell({ building }: BuildingShellProps) {
           position={[0, floor.base, 0]}
         >
           <mesh geometry={geometries.slab} material={materials.slab} castShadow receiveShadow />
-          <mesh geometry={geometries.facade} material={materials.facade} castShadow receiveShadow />
-          <mesh geometry={geometries.glazing} material={materials.glazing} />
+          <mesh
+            name="facade"
+            geometry={geometries.facade}
+            material={
+              floor.floorId === selectedFloorId
+                ? materials.facadeSelected
+                : floor.floorId === hoveredFloorId
+                  ? materials.facadeHover
+                  : materials.facade
+            }
+            castShadow
+            receiveShadow
+          />
+          <mesh
+            name="glazing"
+            geometry={geometries.glazing}
+            material={
+              floor.floorId === selectedFloorId
+                ? materials.glazingSelected
+                : floor.floorId === hoveredFloorId
+                  ? materials.glazingHover
+                  : materials.glazing
+            }
+          />
         </group>
       ))}
 
@@ -115,6 +207,7 @@ export function BuildingShell({ building }: BuildingShellProps) {
         geometry={geometries.parapet}
         material={materials.slab}
         position={[0, layout.roof, 0]}
+        raycast={noRaycast}
         castShadow
       />
 
@@ -123,6 +216,7 @@ export function BuildingShell({ building }: BuildingShellProps) {
           ref={mullions}
           name="mullions"
           args={[geometries.mullion, materials.facade, mullionCount]}
+          raycast={noRaycast}
         />
       )}
     </group>

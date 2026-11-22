@@ -122,7 +122,7 @@ export function ApartmentScene({
           </Html>
         ))}
 
-      <CameraRig mode={cameraMode} poses={poses} limits={limits} />
+      <CameraRig pose={poses[cameraMode]} limits={limits} />
     </>
   );
 }
