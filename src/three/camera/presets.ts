@@ -50,3 +50,27 @@ export function cameraLimits(bounds: Bounds): CameraLimits {
     maxPolarAngle: Math.PI * 0.45,
   };
 }
+
+/**
+ * Three-quarter street-level view of a whole building, fitted to its widest
+ * side for a landscape (16:9) viewport.
+ */
+export function buildingPose(bounds: Bounds, height: number, aspect = 16 / 9): CameraPose {
+  const cx = bounds.minX + bounds.width / 2;
+  const cz = bounds.minY + bounds.height / 2;
+  const span = Math.max(bounds.width, bounds.height);
+  const halfV = ((CAMERA_FOV / 2) * Math.PI) / 180;
+  const halfH = Math.atan(Math.tan(halfV) * aspect);
+  const distance = Math.max(span / 2 / Math.tan(halfH), height / 2 / Math.tan(halfV)) * 1.75;
+  const dir = { x: 0.5, y: 0.32, z: 0.8 };
+  const len = Math.hypot(dir.x, dir.y, dir.z);
+  const target = [cx, height * 0.4, cz] as const;
+  return {
+    position: [
+      cx + (dir.x / len) * distance,
+      target[1] + (dir.y / len) * distance,
+      cz + (dir.z / len) * distance,
+    ],
+    target,
+  };
+}
