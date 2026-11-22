@@ -2,7 +2,7 @@
 
 import type { ThreeEvent } from "@react-three/fiber";
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { BoxGeometry, MeshStandardMaterial, Object3D } from "three";
+import { BoxGeometry, Object3D } from "three";
 import type { BufferGeometry, InstancedMesh } from "three";
 
 import { offsetPolygon, perimeterPoints } from "@/domain/geometry";
@@ -10,7 +10,7 @@ import type { Building } from "@/domain/types";
 
 import { extrudeFootprint } from "../geometry/apartment-geometry";
 import { buildingLayout, STOREY } from "../geometry/building-layout";
-import { scenePalette } from "../palette";
+import { material } from "../materials";
 
 interface BuildingShellProps {
   building: Building;
@@ -65,41 +65,18 @@ export function BuildingShell({
     } satisfies Record<string, BufferGeometry>;
   }, [building.footprint, layout.plinthHeight, storeyHeight, glazingBottom]);
 
-  const materials = useMemo(
-    () => ({
-      facade: new MeshStandardMaterial({ color: scenePalette.facade, roughness: 0.9 }),
-      facadeHover: new MeshStandardMaterial({ color: scenePalette.facadeHover, roughness: 0.9 }),
-      facadeSelected: new MeshStandardMaterial({
-        color: scenePalette.facadeSelected,
-        roughness: 0.85,
-      }),
-      slab: new MeshStandardMaterial({ color: scenePalette.slab, roughness: 0.85 }),
-      glazing: new MeshStandardMaterial({
-        color: scenePalette.glazing,
-        roughness: 0.15,
-        metalness: 0.2,
-      }),
-      glazingHover: new MeshStandardMaterial({
-        color: scenePalette.glazingHover,
-        roughness: 0.15,
-        metalness: 0.2,
-      }),
-      glazingSelected: new MeshStandardMaterial({
-        color: scenePalette.glazingSelected,
-        roughness: 0.2,
-        metalness: 0.15,
-      }),
-    }),
-    [],
-  );
+  const materials = {
+    facade: material("facade"),
+    facadeHover: material("facadeHover"),
+    facadeSelected: material("facadeSelected"),
+    slab: material("concrete"),
+    glazing: material("glass"),
+    glazingHover: material("glassHover"),
+    glazingSelected: material("glassSelected"),
+  };
 
-  useEffect(
-    () => () => {
-      Object.values(geometries).forEach((g) => g.dispose());
-      Object.values(materials).forEach((m) => m.dispose());
-    },
-    [geometries, materials],
-  );
+  // Geometries are per building; materials are shared (see ../materials).
+  useEffect(() => () => Object.values(geometries).forEach((g) => g.dispose()), [geometries]);
 
   // Mullions: one instance per perimeter point per floor.
   const mullionSpots = useMemo(

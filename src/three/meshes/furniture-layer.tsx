@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { BoxGeometry, MeshStandardMaterial } from "three";
+import { BoxGeometry } from "three";
+import type { MeshStandardMaterial } from "three";
 
 import type { FurnitureItem } from "@/domain/types";
 
 import { furnitureParts, type FurnitureFinish } from "../geometry/furniture-parts";
-import { scenePalette } from "../palette";
+import { material } from "../materials";
 
 interface FurnitureLayerProps {
   items: readonly FurnitureItem[];
@@ -14,28 +15,19 @@ interface FurnitureLayerProps {
 
 /**
  * Placeholder furniture from plan data. Every part reuses one unit box
- * scaled to size and one of four shared materials. Furniture doesn't cast
+ * scaled to size and one of four shared library materials. Furniture doesn't cast
  * shadows, to keep the shadow pass cheap.
  */
 export function FurnitureLayer({ items }: FurnitureLayerProps) {
   const unitBox = useMemo(() => new BoxGeometry(1, 1, 1), []);
-  const materials = useMemo<Record<FurnitureFinish, MeshStandardMaterial>>(
-    () => ({
-      fabric: new MeshStandardMaterial({ color: scenePalette.fabric, roughness: 0.95 }),
-      wood: new MeshStandardMaterial({ color: scenePalette.wood, roughness: 0.7 }),
-      ceramic: new MeshStandardMaterial({ color: scenePalette.ceramic, roughness: 0.3 }),
-      lacquer: new MeshStandardMaterial({ color: scenePalette.lacquer, roughness: 0.6 }),
-    }),
-    [],
-  );
+  const materials: Record<FurnitureFinish, MeshStandardMaterial> = {
+    fabric: material("fabric"),
+    wood: material("wood"),
+    ceramic: material("ceramic"),
+    lacquer: material("lacquer"),
+  };
 
-  useEffect(
-    () => () => {
-      unitBox.dispose();
-      Object.values(materials).forEach((m) => m.dispose());
-    },
-    [unitBox, materials],
-  );
+  useEffect(() => () => unitBox.dispose(), [unitBox]);
 
   return (
     <group name="furniture">
