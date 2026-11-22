@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Map as MapIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo } from "react";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -73,29 +74,38 @@ export function ApartmentViewer({ plan, apartmentNumber, className }: ApartmentV
         </ToggleGroup>
       </div>
 
-      <div data-view-mode={viewMode}>
-        {viewMode === "3d" ? (
-          <ApartmentViewer3D
-            plan={plan}
-            label={`3D model of apartment ${apartmentNumber}`}
-            cameraMode={cameraMode}
-            onCameraModeChange={setCameraMode}
-            showFurniture={showFurniture}
-            onShowFurnitureChange={setShowFurniture}
-            highlightedRoomId={selectedRoomId}
-            onRoomSelect={toggleRoom}
-          />
-        ) : (
-          <div className="rounded-3xl bg-card p-6 shadow-soft sm:p-10">
-            <FloorPlan2D
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={viewMode}
+          data-view-mode={viewMode}
+          initial={{ opacity: 0, scale: 0.99 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.99 }}
+          transition={{ duration: 0.2 }}
+        >
+          {viewMode === "3d" ? (
+            <ApartmentViewer3D
               plan={plan}
-              title={`Floor plan of apartment ${apartmentNumber}`}
+              label={`3D model of apartment ${apartmentNumber}`}
+              cameraMode={cameraMode}
+              onCameraModeChange={setCameraMode}
+              showFurniture={showFurniture}
+              onShowFurnitureChange={setShowFurniture}
               highlightedRoomId={selectedRoomId}
               onRoomSelect={toggleRoom}
             />
-          </div>
-        )}
-      </div>
+          ) : (
+            <div className="rounded-3xl bg-card p-6 shadow-soft sm:p-10">
+              <FloorPlan2D
+                plan={plan}
+                title={`Floor plan of apartment ${apartmentNumber}`}
+                highlightedRoomId={selectedRoomId}
+                onRoomSelect={toggleRoom}
+              />
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
 
       <ul aria-label="Rooms" className="flex flex-wrap gap-2">
         {rooms.map((room) => {
@@ -107,7 +117,7 @@ export function ApartmentViewer({ plan, apartmentNumber, className }: ApartmentV
                 aria-pressed={selected}
                 onClick={() => toggleRoom(room.id)}
                 className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  "rounded-full border px-3 py-1.5 text-sm transition-[color,background-color,border-color,transform] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.97] motion-reduce:active:scale-100",
                   selected
                     ? "border-forest-700 bg-forest-700 text-warm-white"
                     : "border-border bg-paper text-foreground hover:bg-accent",

@@ -1,6 +1,7 @@
 "use client";
 
 import { CircleCheck } from "lucide-react";
+import { motion } from "motion/react";
 import { useId, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
@@ -68,7 +69,9 @@ export function InquiryForm({ apartmentLabel }: InquiryFormProps) {
 
   if (sent) {
     return (
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
         ref={successRef}
         tabIndex={-1}
         role="status"
@@ -84,7 +87,7 @@ export function InquiryForm({ apartmentLabel }: InquiryFormProps) {
         <Button variant="outline" className="mt-6 rounded-full" onClick={reset}>
           Write another inquiry
         </Button>
-      </div>
+      </motion.div>
     );
   }
 
