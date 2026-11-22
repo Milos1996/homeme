@@ -1,22 +1,26 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { ProvenanceBadge } from "@/components/common/provenance-badge";
 import { Section } from "@/components/layout/section";
 import type { Apartment, Project } from "@/domain/types";
 import { ApartmentViewer } from "@/features/apartment-viewer";
 import { explorerHref } from "@/features/building-explorer";
 import { DEMO_NOTICE } from "@/lib/constants";
-import { formatArea } from "@/lib/format";
+import { formatRooms } from "@/lib/format";
+
+import { ApartmentSpecs } from "./apartment-specs";
+import { PlanComingSoon } from "./plan-coming-soon";
+import { RoomBreakdown } from "./room-breakdown";
 
 interface ApartmentDetailsProps {
   project: Project;
   apartment: Apartment;
 }
 
-/** Apartment detail entry point. Specs, 2D/3D viewer and inquiry form land in M4. */
+/** Full apartment page: plan and 3D model, key facts, room breakdown and inquiry. */
 export function ApartmentDetails({ project, apartment }: ApartmentDetailsProps) {
   const floor = project.building.floors.find((f) => f.id === apartment.floorId);
+  const plan = apartment.floorPlan;
 
   return (
     <Section>
@@ -27,30 +31,54 @@ export function ApartmentDetails({ project, apartment }: ApartmentDetailsProps) 
         <ArrowLeft aria-hidden className="size-4" />
         Back to {floor ? floor.label : project.name}
       </Link>
+
       <p className="text-sm text-muted-foreground">
         {project.name} · {DEMO_NOTICE}
       </p>
-      <h1 className="mt-4 text-4xl md:text-5xl">Apartment {apartment.number}</h1>
-      <dl className="mt-stack flex flex-wrap items-center gap-x-6 gap-y-2">
-        <div className="flex items-center gap-2">
-          <dt className="sr-only">Area</dt>
-          <dd className="flex items-center gap-2 text-lg">
-            {formatArea(apartment.area)}
-            <ProvenanceBadge provenance={apartment.area.provenance} />
-          </dd>
+      <h1 className="mt-4 text-4xl md:text-6xl">Apartment {apartment.number}</h1>
+      <p className="mt-3 text-lg text-muted-foreground">
+        {formatRooms(apartment.roomCount)} · {floor?.label}
+      </p>
+
+      <div className="mt-stack grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="min-w-0">
+          {plan ? (
+            <ApartmentViewer plan={plan} apartmentNumber={apartment.number} />
+          ) : (
+            <PlanComingSoon apartmentNumber={apartment.number} />
+          )}
         </div>
-        <div>
-          <dt className="sr-only">Rooms</dt>
-          <dd className="text-lg">{apartment.roomCount} rooms</dd>
+        <div className="lg:sticky lg:top-[calc(var(--header-height)+1.5rem)]">
+          <ApartmentSpecs apartment={apartment} floor={floor} projectName={project.name} />
         </div>
-      </dl>
-      {apartment.floorPlan && (
-        <ApartmentViewer
-          plan={apartment.floorPlan}
-          apartmentNumber={apartment.number}
-          className="mt-stack max-w-3xl"
-        />
-      )}
+      </div>
+
+      <div className="mt-section grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="min-w-0">
+          {plan ? (
+            <RoomBreakdown plan={plan} />
+          ) : (
+            <p className="text-muted-foreground">
+              A room-by-room breakdown will be added with the floor plan.
+            </p>
+          )}
+          <p className="mt-6 text-sm text-muted-foreground" data-testid="provenance-legend">
+            <span className="font-medium text-provenance-estimated">~</span> marks an estimated
+            figure. Estimates are replaced with verified values once the developer&apos;s
+            dimensioned unit plans are available; nothing is shown as verified until then.
+          </p>
+        </div>
+
+        <section id="inquiry" aria-labelledby="inquiry-heading" className="scroll-mt-header">
+          <h2 id="inquiry-heading" className="text-3xl">
+            Ask about this home
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            The inquiry form is on its way. {project.name} is a fictional demo, so no real sales
+            team is behind it.
+          </p>
+        </section>
+      </div>
     </Section>
   );
 }

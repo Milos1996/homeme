@@ -9,13 +9,11 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { filterApartments } from "@/domain/selectors";
 import type { Availability } from "@/domain/types";
 import { DEMO_NOTICE } from "@/lib/constants";
-import { formatArea, formatPrice } from "@/lib/format";
+import { formatArea, formatPrice, formatRooms } from "@/lib/format";
 
 import type { FloorSummary, UnitSummary } from "../floor-summary";
 
 const AVAILABILITIES: Availability[] = ["available", "reserved", "sold"];
-
-export const roomLabel = (rooms: number) => (rooms === 1 ? "Studio" : `${rooms} rooms`);
 
 interface ApartmentPanelProps {
   floor: FloorSummary | null;
@@ -98,7 +96,7 @@ export function ApartmentPanel({
         >
           {roomOptions.map((rooms) => (
             <ToggleGroupItem key={rooms} value={String(rooms)} className="rounded-full px-3">
-              {roomLabel(rooms)}
+              {formatRooms(rooms)}
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
@@ -137,7 +135,7 @@ export function ApartmentPanel({
               >
                 <span className="font-display text-xl">{unit.number}</span>
                 <span className="text-sm text-muted-foreground sm:text-base sm:text-foreground">
-                  {roomLabel(unit.roomCount)}
+                  {formatRooms(unit.roomCount)}
                 </span>
                 <span className="col-start-2 row-start-2 text-sm sm:col-start-auto sm:row-start-auto sm:text-base">
                   {formatArea(unit.area)}

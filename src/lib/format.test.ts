@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatArea, formatLength, formatPrice } from "./format";
+import { formatArea, formatLength, formatPrice, formatRooms } from "./format";
 
 describe("format helpers", () => {
   it("prefixes estimates with ~ and leaves verified values plain", () => {
@@ -12,5 +12,10 @@ describe("format helpers", () => {
 
   it("formats prices without decimals", () => {
     expect(formatPrice({ amount: 245000, currency: "EUR" })).toBe("€245,000");
+  });
+
+  it("labels one room as a studio", () => {
+    expect(formatRooms(1)).toBe("Studio");
+    expect(formatRooms(3)).toBe("3 rooms");
   });
 });
